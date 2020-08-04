@@ -1,6 +1,6 @@
 
-# Created by https://www.gitignore.io/api/macos
-# Edit at https://www.gitignore.io/?templates=macos
+# Created by https://www.toptal.com/developers/gitignore/api/macos
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos
 
 ### macOS ###
 # General
@@ -30,15 +30,16 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# End of https://www.gitignore.io/api/macos
+# End of https://www.toptal.com/developers/gitignore/api/macos
 
 sftp-config.json
-foto/*
-arquivos/*
-nevoa.sftp-config.json
-admin/relatorio/*
-admin/qr/*
-admin/resultado/*
-servidor/new_server/qrbf/*
-servidor/new_server2/qr/*
-servidor/new_server/qr/*
+arquivos/imgs/banner/
+arquivos/imgs/logo/
+foto/
+servidor/admin/resultado/
+servidor/admin/qr/
+servidor/new_server/qr/
+servidor/new_server/qrbf/
+servidor/new_server2/qr/
+admin/relatorio/
+admin/resultado/
