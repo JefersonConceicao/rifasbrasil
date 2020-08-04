@@ -1,0 +1,114 @@
+body{font-size:18px; background-color:#2A9E79;}
+
+section{background-color:#FFF;}
+.rifa-imagem{
+
+	height:100px;
+	overflow:hidden;
+
+}
+
+
+.spacer{height:50px;}
+
+
+.oferta-link{
+	color:#000;
+}
+
+.oferta-link:hover{
+	color:#16304B;
+}
+
+
+.rifa-titulo{
+	height:57px;
+	overflow:hidden;
+}
+
+.topo{
+	background-color:#16304B;
+	border:0;
+	border-radius:0;
+	padding:10px;
+	border-bottom:4px solid  #2A9E79;
+}
+.menu ul li{ color:#FFF; }
+
+#bs-example-navbar-collapse-1 ul{list-style:none;}
+#bs-example-navbar-collapse-1 ul li{
+	font-family: 'Noto Sans';
+	display:inline;
+	font-size:0.8em;
+	text-transform: uppercase;
+	padding-left:10px;
+}
+#bs-example-navbar-collapse-1 ul li a{color:#FFF;}
+#bs-example-navbar-collapse-1 ul li a:hover{color:#63b769; text-decoration: none;}
+#bs-example-navbar-collapse-1 ul li.become-user a{
+	text-decoration: none;
+	color:#FFF;
+	background-color:#2A9E79;
+	padding:5px 20px 5px 20px;
+	border-radius:15px;
+	margin-top:9px;
+	margin-left:10px;
+}
+
+.#bs-example-navbar-collapse-1 ul li.become-user a:hover{
+	text-decoration: none;
+	color:#3b5360;
+	background-color:#63b769;
+	padding:5px 20px 5px 20px;
+	border-radius:15px;
+	margin-left:10px;
+}
+.spacer { margin:0; padding:0; height:50px; }
+
+#destaque{
+    padding:0;
+    padding:40px 0 80px 0 ;
+
+}
+.oferta{
+	background:#eaeaea;
+	padding:10px;
+	margin-bottom:15px;
+}
+.oferta:hover{
+	cursor:pointer;
+	background: #FFC23C;
+}
+
+
+
+.oferta-preco{margin-top:15px;}
+.padding-zero{padding:0;}
+.margin-zero{margin:0;}
+.oferta span{font-size:0.8em; margin:0; padding:0;}
+.rodape-oferta {font-size:0.6em; margin-top:15px; text-transform: uppercase; }
+.oferta h2{margin:0; padding:0;}
+
+.rodape{background-color:#2A9E79; font-family: 'Noto Sans'; padding-top:25px; padding-bottom:15px; color:#16304B;}
+
+
+/*Pagina Rifa*/
+.bilhete-vendido{border:1px solid #999; background-color: #eaeaea; text-align: center; padding: 5px 0 5px 0;}
+.bilhete{border:1px solid #FFFD7A; background-color: #FFFEBA; text-align: center; cursor:pointer; padding: 5px 0 5px 0;}
+.bilhete_selected{border:1px solid #FFFC45; background-color: #FFF04D; }
+.comprar_rifa input[type=checkbox] {
+
+cursor: pointer;
+
+display: inline-block;
+display: none;
+font-size: 14px;
+text-align: center;
+font-weight: bold;
+color: #052;
+}
+.comprar_rifa input[type=checkbox]:checked {
+
+}
+.esconder{display:none;}
+.nav{margin-top:10px;}

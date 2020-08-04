@@ -1,0 +1,157 @@
+<?php require_once("php7_mysql_shim.php");
+
+include('../class/conexao.php');
+
+// Cadastro de Usuários
+if(isset($_POST['cadastrar'])){
+
+    // Captação de dados   
+    $_SESSION['nome'] = $mysqli->escape_string($_POST['nome']);
+    $_SESSION['email'] = $mysqli->escape_string($_POST['email']);
+    $_SESSION['telefone'] = limparNumero($_POST['telefone']);
+    $_SESSION['cpf'] = limparNumero($_POST['cpf']);
+    $_SESSION['senha'] = $_POST['senha'];
+    $senha = $_SESSION['senha'];
+    $_SESSION['rsenha'] = $_POST['rsenha'];
+
+    // Validação de dados
+    $sql = "SELECT COUNT(*) as NumUsuarios FROM tbl_usuario WHERE usu_email = '$_SESSION[email]'";
+    $que = $mysqli->query($sql) or die(mysql_error());
+    $dado = $que->fetch_assoc();
+
+    if($dado['NumUsuarios'] > 0)
+        $erro[] = "E-mail já cadastrado";
+
+    if(($_SESSION['email']) ==  "")
+        $erro[] = "Digite seu e-mail";
+
+    if(($_SESSION['nome']) ==  "")
+        $erro[] = "Digite seu nome";
+
+    if(strlen($_SESSION['telefone']) < 10)
+        $erro[] = "Digite seu telefone";
+
+    if(strlen($_SESSION['senha']) < 6 || strlen($_SESSION['senha']) > 16)
+        $erro[] = "A senha deve ter entre 6 e 16 caracteres";
+
+    if($_SESSION['senha'] != $_SESSION['rsenha'])
+        $erro[] = "As senhas não batem";
+
+
+    // Operações com o Banco de Dados 
+    if(count($erro) == 0){
+
+        $_SESSION[senha] = md5($_SESSION[senha]);
+
+        if($_GET['graf'])
+            $add =  1;
+        else
+            $add = 0;
+
+        $sql_code_usuario = 
+            "INSERT INTO tbl_usuario
+            (
+            usu_nome,
+            usu_email,
+            usu_celular,
+            usu_cpf,
+            usu_senha,
+            usu_grafica
+            )VALUES(
+            '$_SESSION[nome]',
+            '$_SESSION[email]',
+            '$_SESSION[telefone]',
+            '$_SESSION[cpf]',
+            '$_SESSION[senha]',
+            '$add'
+            )";
+
+        $confirma_usuario = $mysqli->query($sql_code_usuario) or die($mysqli->error);
+        $usu_codigo = $mysqli->insert_id;     
+            
+        if(count($erro) == 0){
+
+            /*require_once "classe/mail.send.php";
+
+            $mensagem = file_get_contents("templates/notificacao-boasvindas.html");
+            $mensagem = str_replace("|**EMAIL**|", $_SESSION[email], $mensagem);
+            $mensagem = str_replace("|**SENHA**|", $senha, $mensagem);
+            $params = array(
+                'to'        => $_SESSION[email],
+                'subject'   => "Talugo",
+                'html'      => $mensagem,
+                'from'      => 'suporte@talugo.com'
+            );
+
+            sendgridMail($params);*/
+            
+            unset($_SESSION['nome'],
+		    $_SESSION['email'],
+		    $_SESSION['telefone'],
+		    $_SESSION['cpf'],
+		    $_SESSION['senha'],
+		    $_SESSION['rsenha']);
+
+            echo "<script>location.href='index.php?p=usuario';</script>";
+            
+        
+        }
+    }       
+
+}else{
+
+	unset($_SESSION['nome'],
+    $_SESSION['email'],
+    $_SESSION['telefone'],
+    $_SESSION['cpf'],
+    $_SESSION['senha'],
+    $_SESSION['rsenha']);
+}
+
+?><div class="col-lg-12 text-left">
+    <h3>Cadastrar Usuário</h3>
+    <hr>
+</div>
+<div class="col-lg-6">
+	 <form id="cadastro" name="cadastro" method="POST"  action="">
+
+                        <div class="form-group col-lg-12">
+                            <label for="">Nome*</label>
+                            <input type="text" required name="nome" value="<?php echo $_SESSION[nome]; ?>" class=" form-control">
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <label for="">E-mail*</label>
+                            <input type="email" required name="email" value="<?php echo $_SESSION[email]; ?>" class=" form-control">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="">Telefone*</label>
+                            <input type="text" required name="telefone" value="<?php echo $_SESSION[telefone]; ?>" class="telefone  form-control">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="">CPF*</label>
+                            <input type="text" required name="cpf" value="<?php echo $_SESSION[cpf]; ?>" class="cpf  form-control">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="">Senha*</label>
+                            <input type="password" required name="senha" value="<?php echo $_SESSION[senha]; ?>" class=" form-control">
+                        </div>
+                        <div class="form-group col-lg-6">
+                            <label for="">Repita a Senha*</label>
+                            <input type="password" required name="rsenha" value="<?php echo $_SESSION[rsenha]; ?>" class=" form-control">
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <button name="cadastrar" class="btn-success btn">Salvar</button>
+                              <button type="button" onclick="javascript: location.href='index.php?p=usuario';" name="cadastrar" class="btn">Cancelar</button>
+                        </div>  
+    
+                </div>
+
+                 
+            </form>
+</div>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- jQuery Mask pro Telefone -->
+    <script type="text/javascript" src="../js/jquery.maskedinput.min.js"/></script>
+    <script>$('.telefone').mask("(99) 9999-99999");
+    $(".cpf").mask("999.999.999-99");</script>

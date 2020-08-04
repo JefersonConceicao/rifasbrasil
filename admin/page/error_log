@@ -1,0 +1,446 @@
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usu_celular - assumed 'usu_celular' in /home/rifasbra/public_html/admin/page/finalizar_rifa.php on line 178
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usu_celular - assumed 'usu_celular' in /home/rifasbra/public_html/admin/page/finalizar_rifa.php on line 181
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usu_celular - assumed 'usu_celular' in /home/rifasbra/public_html/admin/page/finalizar_rifa.php on line 178
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usu_celular - assumed 'usu_celular' in /home/rifasbra/public_html/admin/page/finalizar_rifa.php on line 181
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/finalizar_rifa.php on line 189
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 160
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant titulo - assumed 'titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 205
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: titulo in /home/rifasbra/public_html/admin/page/editar.php on line 205
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant datasorteio - assumed 'datasorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 209
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: datasorteio in /home/rifasbra/public_html/admin/page/editar.php on line 209
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 215
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 215
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 216
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 216
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 217
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 217
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: rifa_premios in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: rifa_premios in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant valorbilhete - assumed 'valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 225
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: valorbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 225
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant codigo - assumed 'codigo' in /home/rifasbra/public_html/admin/page/editar.php on line 10
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant titulo - assumed 'titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 15
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_titulo - assumed 'rifa_titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 15
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant datasorteio - assumed 'datasorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 16
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_dtsorteio - assumed 'rifa_dtsorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 16
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 17
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_maxbilhetes - assumed 'rifa_maxbilhetes' in /home/rifasbra/public_html/admin/page/editar.php on line 17
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant valorbilhete - assumed 'valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 19
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 19
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant proposito - assumed 'proposito' in /home/rifasbra/public_html/admin/page/editar.php on line 20
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_proposito - assumed 'rifa_proposito' in /home/rifasbra/public_html/admin/page/editar.php on line 20
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premiounico - assumed 'premiounico' in /home/rifasbra/public_html/admin/page/editar.php on line 21
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_descricao - assumed 'rifa_descricao' in /home/rifasbra/public_html/admin/page/editar.php on line 21
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant foto1 - assumed 'foto1' in /home/rifasbra/public_html/admin/page/editar.php on line 22
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_foto1 - assumed 'rifa_foto1' in /home/rifasbra/public_html/admin/page/editar.php on line 22
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant foto2 - assumed 'foto2' in /home/rifasbra/public_html/admin/page/editar.php on line 23
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_foto2 - assumed 'rifa_foto2' in /home/rifasbra/public_html/admin/page/editar.php on line 23
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant foto3 - assumed 'foto3' in /home/rifasbra/public_html/admin/page/editar.php on line 24
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_foto3 - assumed 'rifa_foto3' in /home/rifasbra/public_html/admin/page/editar.php on line 24
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 25
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 25
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 27
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 30
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 36
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 39
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant pre_ranking - assumed 'pre_ranking' in /home/rifasbra/public_html/admin/page/editar.php on line 39
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant pre_descricao - assumed 'pre_descricao' in /home/rifasbra/public_html/admin/page/editar.php on line 39
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant i1 - assumed 'i1' in /home/rifasbra/public_html/admin/page/editar.php on line 54
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant c - assumed 'c' in /home/rifasbra/public_html/admin/page/editar.php on line 54
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant enviar - assumed 'enviar' in /home/rifasbra/public_html/admin/page/editar.php on line 58
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant titulo - assumed 'titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 71
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant proposito - assumed 'proposito' in /home/rifasbra/public_html/admin/page/editar.php on line 93
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premiounico - assumed 'premiounico' in /home/rifasbra/public_html/admin/page/editar.php on line 96
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant datasorteio - assumed 'datasorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 119
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant valorbilhete - assumed 'valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 122
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined variable: i in /home/rifasbra/public_html/admin/page/editar.php on line 150
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 160
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant titulo - assumed 'titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 205
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: titulo in /home/rifasbra/public_html/admin/page/editar.php on line 205
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant datasorteio - assumed 'datasorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 209
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: datasorteio in /home/rifasbra/public_html/admin/page/editar.php on line 209
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 215
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 215
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 216
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 216
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 217
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 217
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: rifa_premios in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: rifa_premios in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant valorbilhete - assumed 'valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 225
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: valorbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 225
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant proposito - assumed 'proposito' in /home/rifasbra/public_html/admin/page/editar.php on line 241
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: proposito in /home/rifasbra/public_html/admin/page/editar.php on line 241
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premiounico - assumed 'premiounico' in /home/rifasbra/public_html/admin/page/editar.php on line 245
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premiounico in /home/rifasbra/public_html/admin/page/editar.php on line 245
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant regulamento - assumed 'regulamento' in /home/rifasbra/public_html/admin/page/editar.php on line 249
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: regulamento in /home/rifasbra/public_html/admin/page/editar.php on line 249
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 258
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 258
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 258
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 258
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 260
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 260
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 260
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 260
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 263
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 263
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 267
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 267
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 271
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 271
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 275
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 275
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 279
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 279
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 282
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: nbilhete in /home/rifasbra/public_html/admin/page/editar.php on line 282
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 285
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 285
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 289
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 289
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 293
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 293
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 297
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 297
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 301
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: premio in /home/rifasbra/public_html/admin/page/editar.php on line 301
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 160
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 40
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 156
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_titulo - assumed 'rifa_titulo' in /home/rifasbra/public_html/admin/page/rifa.php on line 197
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 198
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_maxbilhetes - assumed 'rifa_maxbilhetes' in /home/rifasbra/public_html/admin/page/rifa.php on line 200
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rifa.php on line 201
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_dtsorteio - assumed 'rifa_dtsorteio' in /home/rifasbra/public_html/admin/page/rifa.php on line 203
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_destaque - assumed 'rifa_destaque' in /home/rifasbra/public_html/admin/page/rifa.php on line 207
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 208
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 211
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 212
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 225
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 229
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 231
+[11-Feb-2016 18:24:51 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 232
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 40
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 86
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/rifa.php on line 90
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_vencedor - assumed 'rifa_vencedor' in /home/rifasbra/public_html/admin/page/rifa.php on line 90
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/rifa.php on line 95
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rifa.php on line 118
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_titulo - assumed 'rifa_titulo' in /home/rifasbra/public_html/admin/page/rifa.php on line 122
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 123
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 123
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rifa.php on line 124
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_maxbilhetes - assumed 'rifa_maxbilhetes' in /home/rifasbra/public_html/admin/page/rifa.php on line 125
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_instituicao - assumed 'rifa_instituicao' in /home/rifasbra/public_html/admin/page/rifa.php on line 127
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 132
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 133
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 134
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 138
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 101
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 101
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 108
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 115
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 122
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 128
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 135
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 142
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 25
+[11-Feb-2016 18:24:52 UTC] PHP Notice:  Use of undefined constant usu_email - assumed 'usu_email' in /home/rifasbra/public_html/admin/page/finalizar_rifa.php on line 142
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 160
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 40
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 156
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_titulo - assumed 'rifa_titulo' in /home/rifasbra/public_html/admin/page/rifa.php on line 197
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 198
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_maxbilhetes - assumed 'rifa_maxbilhetes' in /home/rifasbra/public_html/admin/page/rifa.php on line 200
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rifa.php on line 201
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_dtsorteio - assumed 'rifa_dtsorteio' in /home/rifasbra/public_html/admin/page/rifa.php on line 203
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_destaque - assumed 'rifa_destaque' in /home/rifasbra/public_html/admin/page/rifa.php on line 207
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 208
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 211
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 212
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 225
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 229
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 231
+[11-Feb-2016 18:26:15 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 232
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant rifa - assumed 'rifa' in /home/rifasbra/public_html/admin/page/revendedor.php on line 6
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/page/revendedor.php on line 9
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant rev_email - assumed 'rev_email' in /home/rifasbra/public_html/admin/page/revendedor.php on line 19
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant rifa_dono - assumed 'rifa_dono' in /home/rifasbra/public_html/admin/page/revendedor.php on line 74
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/page/revendedor.php on line 74
+[11-Feb-2016 18:26:22 UTC] PHP Notice:  Use of undefined constant rifa_titulo - assumed 'rifa_titulo' in /home/rifasbra/public_html/admin/page/revendedor.php on line 79
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 160
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 40
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 156
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_titulo - assumed 'rifa_titulo' in /home/rifasbra/public_html/admin/page/rifa.php on line 197
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 198
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_maxbilhetes - assumed 'rifa_maxbilhetes' in /home/rifasbra/public_html/admin/page/rifa.php on line 200
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rifa.php on line 201
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_dtsorteio - assumed 'rifa_dtsorteio' in /home/rifasbra/public_html/admin/page/rifa.php on line 203
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_destaque - assumed 'rifa_destaque' in /home/rifasbra/public_html/admin/page/rifa.php on line 207
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 208
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rifa.php on line 211
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 212
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 225
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 229
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 231
+[11-Feb-2016 18:26:36 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rifa.php on line 232
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant usu_cod - assumed 'usu_cod' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 23
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant comissao - assumed 'comissao' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 23
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant t - assumed 't' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 31
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 32
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifasbrasil - assumed 'rifasbrasil' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 34
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant caridade - assumed 'caridade' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 34
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifasbrasil - assumed 'rifasbrasil' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 35
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifasbrasil - assumed 'rifasbrasil' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 36
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant caridade - assumed 'caridade' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 36
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant caridade - assumed 'caridade' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 37
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifasbrasil - assumed 'rifasbrasil' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 38
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant caridade - assumed 'caridade' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 38
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rev - assumed 'rev' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 58
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant ComissaoTotal - assumed 'ComissaoTotal' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 58
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 58
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant ComissaoTotal - assumed 'ComissaoTotal' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 59
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 59
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant Vendas - assumed 'Vendas' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 60
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifa_finalizar - assumed 'rifa_finalizar' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 116
+[11-Feb-2016 18:26:54 UTC] PHP Notice:  Use of undefined constant rifa_cod - assumed 'rifa_cod' in /home/rifasbra/public_html/admin/page/rif_detalhe.php on line 220
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant codigo - assumed 'codigo' in /home/rifasbra/public_html/admin/page/editar.php on line 10
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant titulo - assumed 'titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 15
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_titulo - assumed 'rifa_titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 15
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant datasorteio - assumed 'datasorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 16
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_dtsorteio - assumed 'rifa_dtsorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 16
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 17
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_maxbilhetes - assumed 'rifa_maxbilhetes' in /home/rifasbra/public_html/admin/page/editar.php on line 17
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant valorbilhete - assumed 'valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 19
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_valorbilhete - assumed 'rifa_valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 19
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant proposito - assumed 'proposito' in /home/rifasbra/public_html/admin/page/editar.php on line 20
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_proposito - assumed 'rifa_proposito' in /home/rifasbra/public_html/admin/page/editar.php on line 20
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premiounico - assumed 'premiounico' in /home/rifasbra/public_html/admin/page/editar.php on line 21
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_descricao - assumed 'rifa_descricao' in /home/rifasbra/public_html/admin/page/editar.php on line 21
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant foto1 - assumed 'foto1' in /home/rifasbra/public_html/admin/page/editar.php on line 22
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_foto1 - assumed 'rifa_foto1' in /home/rifasbra/public_html/admin/page/editar.php on line 22
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant foto2 - assumed 'foto2' in /home/rifasbra/public_html/admin/page/editar.php on line 23
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_foto2 - assumed 'rifa_foto2' in /home/rifasbra/public_html/admin/page/editar.php on line 23
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant foto3 - assumed 'foto3' in /home/rifasbra/public_html/admin/page/editar.php on line 24
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_foto3 - assumed 'rifa_foto3' in /home/rifasbra/public_html/admin/page/editar.php on line 24
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 25
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 25
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 27
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 30
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 36
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 39
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant pre_ranking - assumed 'pre_ranking' in /home/rifasbra/public_html/admin/page/editar.php on line 39
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant pre_descricao - assumed 'pre_descricao' in /home/rifasbra/public_html/admin/page/editar.php on line 39
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant i1 - assumed 'i1' in /home/rifasbra/public_html/admin/page/editar.php on line 54
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant c - assumed 'c' in /home/rifasbra/public_html/admin/page/editar.php on line 54
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant enviar - assumed 'enviar' in /home/rifasbra/public_html/admin/page/editar.php on line 58
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined variable: erro in /home/rifasbra/public_html/admin/page/editar.php on line 191
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant titulo - assumed 'titulo' in /home/rifasbra/public_html/admin/page/editar.php on line 205
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant datasorteio - assumed 'datasorteio' in /home/rifasbra/public_html/admin/page/editar.php on line 209
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 215
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 216
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 217
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 218
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant rifa_premios - assumed 'rifa_premios' in /home/rifasbra/public_html/admin/page/editar.php on line 219
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant valorbilhete - assumed 'valorbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 225
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant proposito - assumed 'proposito' in /home/rifasbra/public_html/admin/page/editar.php on line 241
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premiounico - assumed 'premiounico' in /home/rifasbra/public_html/admin/page/editar.php on line 245
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant regulamento - assumed 'regulamento' in /home/rifasbra/public_html/admin/page/editar.php on line 249
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined index: regulamento in /home/rifasbra/public_html/admin/page/editar.php on line 249
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 258
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 258
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 260
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 260
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 263
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 0 in /home/rifasbra/public_html/admin/page/editar.php on line 263
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 267
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 1 in /home/rifasbra/public_html/admin/page/editar.php on line 267
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 271
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 2 in /home/rifasbra/public_html/admin/page/editar.php on line 271
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 275
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 3 in /home/rifasbra/public_html/admin/page/editar.php on line 275
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 279
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 4 in /home/rifasbra/public_html/admin/page/editar.php on line 279
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant nbilhete - assumed 'nbilhete' in /home/rifasbra/public_html/admin/page/editar.php on line 282
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 285
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 5 in /home/rifasbra/public_html/admin/page/editar.php on line 285
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 289
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 6 in /home/rifasbra/public_html/admin/page/editar.php on line 289
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 293
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 7 in /home/rifasbra/public_html/admin/page/editar.php on line 293
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 297
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 8 in /home/rifasbra/public_html/admin/page/editar.php on line 297
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Use of undefined constant premio - assumed 'premio' in /home/rifasbra/public_html/admin/page/editar.php on line 301
+[11-Feb-2016 18:27:27 UTC] PHP Notice:  Undefined offset: 9 in /home/rifasbra/public_html/admin/page/editar.php on line 301
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant ok - assumed 'ok' in /home/rifasbra/public_html/admin/page/config.php on line 17
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Undefined variable: erro in /home/rifasbra/public_html/admin/page/config.php on line 138
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usu_psemail - assumed 'usu_psemail' in /home/rifasbra/public_html/admin/page/config.php on line 152
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usu_pstoken - assumed 'usu_pstoken' in /home/rifasbra/public_html/admin/page/config.php on line 156
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant banco - assumed 'banco' in /home/rifasbra/public_html/admin/page/config.php on line 166
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant agencia - assumed 'agencia' in /home/rifasbra/public_html/admin/page/config.php on line 170
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant conta - assumed 'conta' in /home/rifasbra/public_html/admin/page/config.php on line 174
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant outrasinfos - assumed 'outrasinfos' in /home/rifasbra/public_html/admin/page/config.php on line 178
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usu_nome - assumed 'usu_nome' in /home/rifasbra/public_html/admin/page/config.php on line 185
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usu_email - assumed 'usu_email' in /home/rifasbra/public_html/admin/page/config.php on line 189
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usu_celular - assumed 'usu_celular' in /home/rifasbra/public_html/admin/page/config.php on line 193
+[11-Feb-2016 18:27:33 UTC] PHP Notice:  Use of undefined constant usu_cpf - assumed 'usu_cpf' in /home/rifasbra/public_html/admin/page/config.php on line 197
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant usuario - assumed 'usuario' in /home/rifasbra/public_html/admin/index.php on line 4
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 51
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 57
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 63
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 69
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 75
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 81
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Undefined index: p in /home/rifasbra/public_html/admin/index.php on line 87
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant p - assumed 'p' in /home/rifasbra/public_html/admin/index.php on line 157
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/index.php on line 160
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 40
+[11-Feb-2016 18:28:05 UTC] PHP Notice:  Use of undefined constant admin - assumed 'admin' in /home/rifasbra/public_html/admin/page/rifa.php on line 156

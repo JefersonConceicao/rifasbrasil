@@ -1,0 +1,10 @@
+php_value memory_limit 2048M
+php_value max_input_vars 10000
+php_flag display_startup_errors on
+php_flag display_errors on
+php_flag html_errors on
+php_flag  log_errors on
+
+<IfModule mod_headers.c>
+   Header set P3P "policyref=\"/w3c/p3p.xml\", CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\""
+ </IfModule>

@@ -1,0 +1,18 @@
+body{font-size:18px; background-color:#eaeaea;}
+
+section{background-color:#FFF;}
+
+.spacer{height:50px;}
+
+.navbar{background:#2A9E79; color:#FFF; border-radius:0; border:0;}
+.navbar-default .navbar-nav > li > a {color:#FFF;}
+
+.holder{background-color:#FFF; background-color:#FFF;  padding:15px;}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: #2A9E79;
+  background-color: #FFF;
+}
+.navbar-brand a, a:visited{color:#16304B;}
