@@ -14,7 +14,7 @@ if(empty($_GET['serie']) && !empty($_GET['bil'])) {
 	foreach($fix as $v) {
 		$res[] = substr('0' . $v, -2);
 	}
-	$serie = $conexao->select('*')->from('loteamento_rifa_bilhetes')->where("sequencia = '" . implode('-', $res) . "'")->limit(1)->executeNGet('serie');
+	$serie = $conexao->select('*')->from('loteamento_rifa_bilhetes')->where("sequencia = '" . implode('-', $res) . "' AND rifa = '$rifa_cod'")->limit(1)->executeNGet('serie');
 }
 
 $rifa = $conexao

@@ -216,7 +216,12 @@ if(isset($_POST['gerarComprovantes'])){
                 where u.usu_cod = r.rifa_dono and rifa_cod='$rifa_cod'", $mysqli);
 
             $bilhete_str = array();
+            $modoBancaOnline = $rifa['banca_online'];
+            $aposta = 0;
+            $multiplicador = $rifa['multiplicador'];
             foreach ($bilhetes as $value) {
+                if($modoBancaOnline)
+                    $aposta = $value['bil_aposta'];
                 $rifa_cod = $value['bil_rifa'];
                 $bilhete_str[] = str_pad($value['bil_numero'], strlen($rifa['rifa_maxbilhetes'])-1, '0', STR_PAD_LEFT);
             }
@@ -233,7 +238,10 @@ if(isset($_POST['gerarComprovantes'])){
                 $conteudo .= "<p>TITULO DA RIFA: <b>{$rifa['rifa_titulo']}</b><br>";
                 $conteudo .= "Sorteio: <b>{$dataSorteio}</b><br>";
                 $conteudo .= "Vendedor: <b>{$vendedor['usu_nome']}</b><br>";
-                $conteudo .= "Valor do Bilhete: <b>R$ ".number_format($rifa['rifa_valorbilhete'],2,',','.')."</b></p>";
+                if($modoBancaOnline)
+                    $conteudo .= "Valor da Aposta: <b>R$ ".number_format($aposta,2,',','.')."</b></p>";
+                else
+                    $conteudo .= "Valor do Bilhete: <b>R$ ".number_format($rifa['rifa_valorbilhete'],2,',','.')."</b></p>";
 
                 $conteudo .= "<p>Data/Hora: <b>{$data}</b><br>";
                 $conteudo .= "Nome: <b>{$usuario['usu_nome']}</b><br>";
@@ -242,7 +250,10 @@ if(isset($_POST['gerarComprovantes'])){
                 $conteudo .= "BILHETE(S):</p>";
                 $conteudo .= "<p>[ $bilhete_str ] </p>";
 
-                $conteudo .= "<p>TOTAL: <b>R$ ".number_format($compra['comp_valortotal'],2,',','.')."</b><br>";
+                if($modoBancaOnline)
+                    $conteudo .= "<p>Prêmio Possível: <b>R$ ".number_format($aposta*$multiplicador,2,',','.')."</b><br>";
+                else
+                    $conteudo .= "<p>TOTAL: <b>R$ ".number_format($compra['comp_valortotal'],2,',','.')."</b><br>";
                 
                 if($compra['comp_status_revenda'] == 1 || $compra['comp_situacao'] == '4' || $compra['comp_situacao'] == '3') 
                     $conteudo .= "PAGAMENTO: <b>SIM - PAGO</b><br>";
@@ -670,6 +681,10 @@ if ((isset($_REQUEST["liberar"])))
             <div class="form-group">
                 <button type="button" class="btn form-control btn-primary" onclick="gerarRelatorio(1);">REL. Totais</button>
             </div>
+
+            <div class="form-group">
+                <button type="button" class="btn form-control btn-primary" onclick="gerarRelatorio(2);">TXT 1a Etapa</button>
+            </div>
             
             <div class="form-group">
                 <button type="button" onclick="javascript: location.href='index.php?p=venda';" class="btn btn-defaut form-control">Limpar Filtro</button>
@@ -741,9 +756,14 @@ if ((isset($_REQUEST["liberar"])))
             r.rifa_titulo,
             r.rifa_dtsorteio,
             r.dezena_bolao,
+            r.etapa1,
+            r.etapa2,
+            r.qtd_dezenas_etapa_1,
+            r.qtd_dezenas_etapa_2,
             c.comp_situacao,
             c.comp_data,
             c.comp_serie,
+            c.comp_grupo,
             c.comp_cod,
             c.comp_parcelamento_entrada,
             c.comp_parcelamento_data,
@@ -781,8 +801,13 @@ if ((isset($_REQUEST["liberar"])))
         r.rifa_dtsorteio,
         r.rifa_titulo, 
         r.dezena_bolao,
+        r.etapa1,
+        r.etapa2,
+        r.qtd_dezenas_etapa_1,
+        r.qtd_dezenas_etapa_2,
         c.comp_cod,
         c.comp_data,
+        c.comp_grupo,
         r.rifa_finalizar,
         c.comp_status_revenda,
         c.comp_parcelamento_entrada,
@@ -866,9 +891,14 @@ if ((isset($_REQUEST["liberar"])))
             r.rifa_titulo, 
             r.rifa_dtsorteio,
             r.dezena_bolao,
+            r.etapa1,
+            r.etapa2,
+            r.qtd_dezenas_etapa_1,
+            r.qtd_dezenas_etapa_2,
             c.comp_situacao,
             c.comp_serie,
             c.comp_cod,
+            c.comp_grupo,
             c.comp_data,
             c.comp_revendedor,
             c.comp_parcelamento_entrada,
@@ -908,10 +938,15 @@ if ((isset($_REQUEST["liberar"])))
             r.rifa_maxbilhetes, 
             r.rifa_titulo, 
             r.rifa_dtsorteio,
+            r.etapa1,
+            r.etapa2,
+            r.qtd_dezenas_etapa_1,
+            r.qtd_dezenas_etapa_2,
             c.comp_situacao,
             c.comp_data,
             c.comp_serie,
             c.comp_cod,
+            c.comp_grupo,
             c.comp_parcelamento_entrada,
             c.comp_parcelamento_data,
             r.rifa_finalizar,
@@ -1053,6 +1088,7 @@ if ((isset($_REQUEST["liberar"])))
                         <td><a href="javascript: void(0);" onclick="ordenar('usu_regiao', '<?php if($_POST['ordenar_tipo'] == 'ASC') echo "DESC"; else echo "ASC"; ?>');">Bairro/Região <i class="glyphicon glyphicon-<?php if($_POST['ordenar_tipo'] == 'ASC') echo "sort-by-alphabet-alt"; else echo "sort-by-alphabet"; ?>"></i></a></td>
                         <td><a href="javascript: void(0);" onclick="ordenar('revendedor', '<?php if($_POST['ordenar_tipo'] == 'ASC') echo "DESC"; else echo "ASC"; ?>');">Vendedor <i class="glyphicon glyphicon-<?php if($_POST['ordenar_tipo'] == 'ASC') echo "sort-by-alphabet-alt"; else echo "sort-by-alphabet"; ?>"></i></a></td>
                         <td width="40%">Bilhetes</td> 
+                        <td>Grupo</td>
                         <td>Total</td>
                         <td>Situação</td>
                         <td class="removerRelatorio"></td>
@@ -1126,6 +1162,7 @@ if ((isset($_REQUEST["liberar"])))
                             <?php echo $bilhetes; ?>
                             <?php }else echo "Indisponível até a finalização."; ?>
                             </td>
+                            <td><?php if($resbil['comp_grupo'] != null) echo getNameFromNumber($resbil['comp_grupo']); ?></td>
                             <td><?php echo "R$ ".number_format($resbil['comp_valortotal'],'2',',','.') ?>
                                 <?php if($resbil['comp_parcelamento_entrada']) echo "<br><span style='color:red'; ?>R$ ".($resbil['comp_valortotal']-$resbil['comp_parcelamento_entrada'])."</span><br><span style='color:#e5bb00;'>".date('d/m/Y', strtotime($resbil['comp_parcelamento_data']))."</span>"; ?>
                             </td>

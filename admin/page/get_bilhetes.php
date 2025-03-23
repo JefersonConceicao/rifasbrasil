@@ -16,15 +16,18 @@ if (isset($_GET['origem'])) {
 
 
 include("../../class/conexao.php");
+include("../../class/function_surpresinha.php");
 
 if (!$_SESSION) @session_start();
 
-$query_rifa = $mysqli->query("SELECT rifa_maxbilhetes, rifa_dono, dezena_bolao, travar_bilhetes, dezena_bolao, etapa1, etapa2 FROM tbl_rifas WHERE rifa_cod = '$rifa'");
+$query_rifa = $mysqli->query("SELECT rifa_maxbilhetes, rifa_dono, dezena_bolao, travar_bilhetes, banca_online, multiplicador, valor_aposta, dezena_bolao, etapa1, etapa2 FROM tbl_rifas WHERE rifa_cod = '$rifa'");
 $query_rifa = $query_rifa->fetch_assoc();
 $rifa_dezena_bolao = $query_rifa['dezena_bolao'];
 $rifa_max_bilhetes = $query_rifa['rifa_maxbilhetes'];
 $etapa1 = $query_rifa['etapa1'];
 $etapa2 = $query_rifa['etapa2'];
+$modoBancaOnline = $query_rifa['valor_aposta'];
+$multiplicador = $query_rifa['multiplicador'];
     
 $selecao_2_etapas = false;
 
@@ -34,10 +37,19 @@ if($etapa1 && $etapa2) {
     $etapa[1] = explode('-', $etapa1);
     $etapa[2] = explode('-', $etapa2);
     $selecao_2_etapas = true;
+} else if($etapa1) {
+    $etapa = array();
+    $etapa_atual = isset($_GET['etapa']) ? intval($_GET['etapa']) : 1;
+    $etapa[1] = explode('-', $etapa1);
+    $selecao_2_etapas = true;
 }
 
 $dezenabolao = ($rifa_dezena_bolao) ? true : false;
 if ($query_rifa['travar_bilhetes'] == '1') $travarBilhetes = true;
+
+if($travarBilhetes && $rifa_dezena_bolao) {
+    $fim = $rifa_max_bilhetes;
+}
 
 
 function getBilhetesDaLinhaNoBd ($linha) {
@@ -60,7 +72,8 @@ function getBilhetesDaLinhaNoBd ($linha) {
 
 $bilhetes_disponiveis_revendedor = false;
 if($travarBilhetes && ((isset($_SESSION['cod_rev']) && $query_rifa['rifa_dono'] != $_SESSION['cod_rev']) || (isset($_SESSION['usuario']) && $query_rifa['rifa_dono'] != $_SESSION['usuario']))) {
-        
+    
+    $travado = $dezenabolao;
     $user = isset($_SESSION['cod_rev']) ? $_SESSION['cod_rev'] : $_SESSION['usuario'];
     $bilhetes_disponiveis_revendedor = array();
     $query_opcao_reserva = $mysqli->query("SELECT * FROM reserva WHERE rifa = '$rifa' AND revendedor = '{$user}'") or die($mysqli->error);
@@ -71,23 +84,86 @@ if($travarBilhetes && ((isset($_SESSION['cod_rev']) && $query_rifa['rifa_dono'] 
             $bilhetes_disponiveis_revendedor = $bilhetes_disponiveis_revendedor + getBilhetesDaLinhaNoBd($resultado_opcao_reserva['bilhete']);
         } while ($resultado_opcao_reserva = $query_opcao_reserva->fetch_assoc());
 
-    //var_dump($bilhetes_disponiveis_revendedor);
 
     $query_opcao_reserva = $mysqli->query("SELECT * FROM grupo_revendedor gr, revenda r WHERE gr.revenda = r.codigo AND r.rifa = '$rifa' AND r.vendedor = '{$user}'") or die($mysqli->error);
     $resultado_opcao_reserva = $query_opcao_reserva->fetch_assoc();
 
-    if($query_opcao_reserva->num_rows) 
+    if($query_opcao_reserva->num_rows) {
+
+        $todos_grupos = array();
         do {
-            $bilhetes = file_get_contents("http://rifasbrasil.com.br/servidor/new_server/get_bilhete.php?rifa={$rifa}&layout=1&grupo={$resultado_opcao_reserva['grupo']}");
-            $bilhetes = (json_decode($bilhetes, 1));
-            $bilhetes = $bilhetes['bilhete'];
-            foreach($bilhetes as $bil) {
-                $tmp = explode('-', $bil);
-                $bilhetes_disponiveis_revendedor[intval($tmp[1])] = true;
-            }
-            //$bilhetes_disponiveis_revendedor = $bilhetes_disponiveis_revendedor + getBilhetesDaLinhaNoBd($resultado_opcao_reserva['bilhete']);
+            $todos_grupos[$resultado_opcao_reserva['grupo']] = true;
         } while ($resultado_opcao_reserva = $query_opcao_reserva->fetch_assoc());
 
+        if(array_keys($todos_grupos)) {
+            $array_keys_string = "'" . implode("', '", array_keys($todos_grupos)) . "'";
+
+            $query_cache = $mysqli->query("SELECT * FROM cache_bilhetes_do_grupo WHERE rifa = '$rifa' AND grupo IN ({$array_keys_string})") or die($mysqli->error);
+
+           //var_dump("SELECT * FROM cache_bilhetes_do_grupo WHERE rifa = '$rifa' AND grupo IN ({$array_keys_string})");
+
+            $resultado_query_cache = $query_cache->fetch_assoc();
+
+            $cache_de_bilhetes = array();
+            if($query_cache->num_rows)
+                do {
+
+                    if(!isset($cache_de_bilhetes[$resultado_query_cache['grupo']]))
+                        $cache_de_bilhetes[$resultado_query_cache['grupo']] = array();
+
+                    $cache_de_bilhetes[$resultado_query_cache['grupo']][intval($resultado_query_cache['bilhete'])] = true;
+
+                } while($resultado_query_cache = $query_cache->fetch_assoc());
+
+            $paraInserirNoBd = array();
+
+            foreach($todos_grupos as $grupo=>$whatever) {
+
+                if(isset($cache_de_bilhetes[$grupo])) {
+                    //echo 'isset';
+                    foreach($cache_de_bilhetes[$grupo] as $bil=>$void) {
+                        $bilhetes_disponiveis_revendedor[$bil] = true;
+                    }
+                } else {
+                    //echo 'nao isset';
+                    $bilhetes = file_get_contents("http://rifasbrasil.com.br/servidor/new_server/get_bilhete.php?rifa={$rifa}&layout=1&grupo={$grupo}");
+                    $bilhetes = (json_decode($bilhetes, 1));
+                    $bilhetes = $bilhetes['bilhete'];
+                    foreach($bilhetes as $bil) {
+                        $tmp = explode('-', $bil);
+                        $bilhetes_disponiveis_revendedor[intval($tmp[1])] = true;
+                        if(!isset($paraInserirNoBd[$grupo]))
+                            $paraInserirNoBd[$grupo] = array();
+                        $paraInserirNoBd[$grupo][] = intval($tmp[1]);
+                    }
+                }
+            }
+
+            if(count(array_keys($paraInserirNoBd)) > 0) {
+                $cache_values = array();
+                foreach($paraInserirNoBd as $grupo=>$bilhetes_cache) {
+                    foreach($bilhetes_cache as $bilhete_inserir) {
+                        $cache_values[] = "('$grupo', '$bilhete_inserir', '$rifa')";
+                    }
+                }
+                $inserir_no_cache = "INSERT INTO cache_bilhetes_do_grupo (grupo, bilhete, rifa) VALUES ". implode(', ', $cache_values);
+                $mysqli->query($inserir_no_cache) or die('FALHOU AO INSERIR NO CACHE: ' . $mysqli->error);
+            }
+
+            /*
+            do {
+                $bilhetes = file_get_contents("http://rifasbrasil.com.br/servidor/new_server/get_bilhete.php?rifa={$rifa}&layout=1&grupo={$resultado_opcao_reserva['grupo']}");
+                $bilhetes = (json_decode($bilhetes, 1));
+                $bilhetes = $bilhetes['bilhete'];
+                foreach($bilhetes as $bil) {
+                    $tmp = explode('-', $bil);
+                    $bilhetes_disponiveis_revendedor[intval($tmp[1])] = true;
+                }
+                //$bilhetes_disponiveis_revendedor = $bilhetes_disponiveis_revendedor + getBilhetesDaLinhaNoBd($resultado_opcao_reserva['bilhete']);
+            } while ($resultado_opcao_reserva = $query_opcao_reserva->fetch_assoc());
+            */
+        }
+    }
 }
 
 
@@ -150,6 +226,7 @@ $sqlBil = "SELECT
 bilhetes.bil_rifa,
 bilhetes.bil_numero,
 bilhetes.bil_compra,
+bilhetes.bil_bilhete_original,
 compra.comp_cod
 FROM
 tbl_bilhetes bilhetes
@@ -161,16 +238,72 @@ WHERE
 ) AND(bilhetes.bil_rifa = '$rifa') AND(
     compra.comp_situacao = '3' OR compra.comp_situacao = '4' OR compra.comp_status_revenda = '1'
 )";
-
 $queryBil = $mysqli->query($sqlBil) or die($mysqli->error);
 $bil = $queryBil->fetch_assoc();
 $bilVendidos = array();
 
+/*
+if($_GET['teste'] && $travarBilhetes && $rifa_dezena_bolao) {
+    // agrupa os bilhetes por compra, pra poder traduzir cada compra em 1 bilhete
+    // montar uma lista de traducao
+    $listaBilhetes = array();
+    for($k = 0; $k <= $fim; $k++) {
+        $tmp = gerarDezenas($rifa, $k);
+        foreach($tmp as $num) {
+            if(!isset($listaBilhetes[$num]))
+                $listaBilhetes[$num] = array();
+            $listaBilhetes[$num][] = $k;
+        }
+    }
+
+    $bilhetesVendidosPorCompra = array();
+    if ($queryBil->num_rows > 0)
+        do {
+            //$bilVendidos[] = $bil['bil_numero'];
+            if(!isset($bilhetesVendidosPorCompra[$bil['comp_cod']]))
+                $bilhetesVendidosPorCompra[$bil['comp_cod']] = array();
+            $bilhetesVendidosPorCompra[$bil['comp_cod']][] = intval($bil['bil_numero']);
+        } while ($bil = $queryBil->fetch_assoc());
+    //var_dump($listaBilhetes);
+
+    foreach($bilhetesVendidosPorCompra as $compra => $arrBilhetes) {
+
+        $provaveis = array();
+        foreach($arrBilhetes as $bilhete) {
+            if(count($provaveis) == 0)
+                $provaveis = $listaBilhetes[$bilhete];
+            else
+                $provaveis = array_intersect($provaveis, $listaBilhetes[$bilhete]);
+            if(count($provaveis) == 1)
+                break;
+        }
+        $bilVendidos[] = array_pop($provaveis);
+
+    }
+
+    var_dump($bilVendidos);
+    
+} else {
+    if ($queryBil->num_rows > 0)
+        do {
+            $bilVendidos[] = $bil['bil_numero'];
+            
+        } while ($bil = $queryBil->fetch_assoc());
+}
+*/
 
 
+//$travarBilhetes && $rifa_dezena_bolao
+$bil_adicionado = array();
 if ($queryBil->num_rows > 0)
     do {
-        $bilVendidos[] = $bil['bil_numero'];
+        if($travarBilhetes && $rifa_dezena_bolao) {
+            if($bil['bil_bilhete_original'] && !isset($bil_adicionado[$bil['bil_bilhete_original']])) {
+                $bil_adicionado[$bil['bil_bilhete_original']] = true;
+                $bilVendidos[] = $bil['bil_bilhete_original'];
+            }
+        } else
+            $bilVendidos[] = $bil['bil_numero'];
     } while ($bil = $queryBil->fetch_assoc());
 
 $bilhetes_da_etapa = array();
@@ -193,6 +326,65 @@ if($selecao_2_etapas) {
     
 }
 
+if($modoBancaOnline) {
+
+    
+    $bilhetesReservados = array();
+    //$sql_query = "SELECT SUM(bil.bil_aposta) as apostas, bil.bil_numero FROM tbl_bilhetes bil WHERE bil.bil_rifa = '$rifa' GROUP BY bil.bil_numero";
+    $sql_query = "SELECT bil.bil_aposta, u.usu_cod as cliente_id, u.usu_nome as cliente_nome, bil.bil_aposta, bil.bil_numero FROM tbl_bilhetes bil, tbl_usuario u, tbl_compra c WHERE bil.bil_rifa = '$rifa' AND c.comp_cod = bil.bil_compra AND u.usu_cod = c.comp_cliente";
+    $query = $mysqli->query($sql_query) or die($mysqli->error);
+
+    $tooltip = array();
+    $bilVendidos = array();
+    $parciais = array();
+    $nomesClientes = array();
+
+    $somatorioApostas = array();
+    $porComprador = array();
+
+    while ($bil = $query->fetch_assoc()) {
+        if(!isset($somatorioApostas[$bil['bil_numero']])) 
+            $somatorioApostas[$bil['bil_numero']] = 0;
+
+        if(!isset($porComprador[$bil['bil_numero']])) 
+            $porComprador[$bil['bil_numero']] = array();
+
+        if(!isset($porComprador[$bil['bil_numero']][$bil['cliente_id']])) 
+            $porComprador[$bil['bil_numero']][$bil['cliente_id']] = 0;
+
+        if(!isset($nomesClientes[$bil['cliente_id']]))
+            $nomesClientes[$bil['cliente_id']] = $bil['cliente_nome'];
+        
+        $somatorioApostas[$bil['bil_numero']] += $bil['bil_aposta'];  
+        $porComprador[$bil['bil_numero']][$bil['cliente_id']] += $bil['bil_aposta']; 
+
+    }
+
+
+    foreach($porComprador as $bil_numero => $arr ) {
+        foreach($arr as $cliente_id => $apostado) {
+
+            $podeganhar = $apostado * $multiplicador;
+
+            if(!isset($tooltip[$bil_numero]))
+                $tooltip[$bil_numero] = array();
+
+            $tooltip[$bil_numero][] = "{$nomesClientes[$cliente_id]}: {$apostado}x{$podeganhar}";
+
+        }
+    }
+
+    foreach($somatorioApostas as $bil=>$valor) {
+        if($valor >= $modoBancaOnline)
+            $bilVendidos[] = $bil;
+        else {
+            unset($tooltip[$bil]);
+            $parciais[] = $bil;
+        }
+            
+    }
+}
+
 if($travarBilhetes && isset($_GET['linkMovel'])) {
 
     if(isset($_GET['getCount'])) {
@@ -205,7 +397,16 @@ if($travarBilhetes && isset($_GET['linkMovel'])) {
             'vendidos' => 0
         );
 
-        for ($inicio; $inicio < $rifa_max_bilhetes; $inicio++) {
+        $range = array();
+        if($travado) {
+            foreach($bilhetes_disponiveis_revendedor as $bil=>$void)
+                $range[] = $bil;
+        } else {
+            for ($inicio; $inicio < $rifa_max_bilhetes; $inicio++)
+                $range[] = $inicio;
+        }
+        foreach($range as $inicio) {
+        //for ($inicio; $inicio < $rifa_max_bilhetes; $inicio++) {
             
             if($selecao_2_etapas && !$bilhetes_da_etapa[$inicio]) 
                 continue;
@@ -251,6 +452,9 @@ if($travarBilhetes && isset($_GET['linkMovel'])) {
             border-color: #2e6da4;
             color:white;
         }
+        .venda_parcial {
+            background-color:	#04A1E5!important;
+        }
         .bilhete-vendido {
             background-color: #d9534f;
             border-color: #d43f3a;
@@ -269,6 +473,11 @@ if($travarBilhetes && isset($_GET['linkMovel'])) {
         .bilhete_holder {
             padding: 3px;
         }
+        .bilhete_selected {
+        border: 1px solid #FFFC45;
+        background-color: #FFF04D;
+        color:black;
+    }
     </style>
 
     <?php
@@ -287,7 +496,16 @@ if($travarBilhetes && isset($_GET['linkMovel'])) {
     }
 
     //$inicio_original = $inicio;
-    for ($inicio; $inicio < $fim; $inicio++) {
+    $range = array();
+    if($travado) {
+        foreach($bilhetes_disponiveis_revendedor as $bil=>$void)
+            $range[] = $bil;
+    } else {
+        for ($inicio; $inicio < $fim; $inicio++)
+            $range[] = $inicio;
+    }
+    foreach($range as $inicio) {
+    //for ($inicio; $inicio < $fim; $inicio++) {
 
 
         if($selecao_2_etapas && !$bilhetes_da_etapa[$inicio])
@@ -299,7 +517,7 @@ if($travarBilhetes && isset($_GET['linkMovel'])) {
             $numero_bilhete = str_pad($inicio, $maxbilhettes, "0", STR_PAD_LEFT);
 
         // se for dezena bolao, não precisa descobrir quais bilhetes foram vendidos
-        if ($dezenabolao) {
+        if ($dezenabolao && !$travarBilhetes) {
             $bilVendidos = array();
             $bilhetesReservados = array();
         }
@@ -462,77 +680,97 @@ if($travarBilhetes && isset($_GET['linkMovel'])) {
 
 }
 
-for ($inicio; $inicio < $fim; $inicio++) {
+$range = array();
+if($travado) {
+    foreach($bilhetes_disponiveis_revendedor as $bil=>$void)
+        $range[] = $bil;
+} else {
+    for ($inicio; $inicio < $fim; $inicio++)
+        $range[] = $inicio;
+}
+foreach($range as $inicio) {
+//for ($inicio; $inicio < $fim; $inicio++) {
 
     if($selecao_2_etapas && !$bilhetes_da_etapa[$inicio])
         continue;
 
-    if ($dezenabolao)
+    if ($dezenabolao && !$travado)
         $numero_bilhete = str_pad($inicio, 2, "0", STR_PAD_LEFT);
     else
         $numero_bilhete = str_pad($inicio, $maxbilhettes, "0", STR_PAD_LEFT);
 
     // se for dezena bolao, não precisa descobrir quais bilhetes foram vendidos
-    if ($dezenabolao) {
+    if ($dezenabolao && !$travarBilhetes && !$modoBancaOnline) {
         $bilVendidos = array();
         $bilhetesReservados = array();
     }
 
     if (in_array($inicio, $bilVendidos)) {
-        if ($rifa_max_bilhetes == 100 && $rifa_dezena_bolao == 0 && $origem == NULL) { ?>
-            <div class="col-xs-2 bilhete_holder col-sm-4 col-md-2 col-lg-1">
-                <div class="col-lg-12 bilhete-vendido">
-                    <input class="esconder" type="checkbox"><?php echo $numero_bilhete; ?>
+        if(!($travarBilhetes && $rifa_dezena_bolao)) {
+            if ($rifa_max_bilhetes == 100 && $rifa_dezena_bolao == 0 && $origem == NULL) { ?>
+                <div class="col-xs-2 bilhete_holder tooltip-custom col-sm-4 col-md-2 col-lg-1">
+                <?php if($modoBancaOnline && isset($tooltip[$inicio]) && is_array($tooltip[$inicio]) && count($tooltip[$inicio]) > 0){ ?><span class="tooltiptext"><?= implode('<br>', $tooltip[$inicio]); ?></span><?php } ?>
+                    <div class="col-lg-12 bilhete-vendido">
+                        <input class="esconder" type="checkbox"><?php echo $numero_bilhete; ?>
+                    </div>
                 </div>
-            </div>
-        <?php } else { ?>
+            <?php } else { ?>
 
-            <div style="margin-bottom:10px;" class="bilhete_holder col-xs-3 col-sm-4 col-md-2 col-lg-1">
-                <div class="col-lg-12 bilhete-vendido">
-                    <input class="esconder" type="checkbox"><?php echo $numero_bilhete; ?>
+                <div style="margin-bottom:10px;" class="bilhete_holder col-xs-3 col-sm-4 col-md-2 col-lg-1">
+                    <div class="col-lg-12 bilhete-vendido">
+                        <input class="esconder" type="checkbox"><?php echo $numero_bilhete; ?>
+                    </div>
                 </div>
-            </div>
-        <?php }
-            } else if (in_array($inicio, $bilhetesReservados)) {
+            <?php 
+            } 
+        }
+    } else if (in_array($inicio, $bilhetesReservados)) {
+
+        $errMsg = "Este bilhete não foi vendido, mas está reservado.";
+        if($modoBancaOnline)
+            $errMsg = "Este bilhete já atingiu o máximo de apostas.";
                
                if ($rifa_max_bilhetes == 100 && $rifa_dezena_bolao == 0 && $origem == NULL) { ?>
                 <div class="col-xs-2 bilhete_holder col-sm-4 col-md-2 col-lg-1">
-                    <div onclick="alert('Este bilhete não foi vendido, mas está reservado.');" class="col-lg-12 bilhete-reservado">
+                    <div onclick="alert('<?= $errMsg; ?>');" class="col-lg-12 teste bilhete-reservado">
                         <input class="esconder" type="checkbox"><?php echo $numero_bilhete; ?>
                     </div>
                 </div>
                 <?php } else { ?>
                 <div style="margin-bottom:10px;" class="col-xs-3 bilhete_holder col-sm-4 col-md-2 col-lg-1">
-                    <div onclick="alert('Este bilhete não foi vendido, mas está reservado.');" class="col-lg-12 bilhete-reservado">
+                    <div onclick="alert('<?= $errMsg; ?>');" class="col-lg-12 bilhete-reservado">
                         <input class="esconder" type="checkbox"><?php echo $numero_bilhete; ?>
                     </div>
                 </div>
-                <?php } ?>
-    <?php
-            } else {
-
-                if ($rifa_max_bilhetes == 100 && $rifa_dezena_bolao == 0 && $origem == NULL) : ?>
-                    <div onclick="javascript: checkar('<?php echo $numero_bilhete; ?>');" class="col-xs-2 bilhete_holder col-sm-4 col-md-2 col-lg-1">
-                        <div onclick="scrollOnClick()" id="holder<?php echo $numero_bilhete; ?>" class="col-lg-12 bilhete <?php if ($_SESSION['bilhete' . $j] == 1 || strpos($selecionado, $numero_bilhete . ";")  !== false) echo "bilhete_selected"; ?>">
-                            <input <?php if (strpos($selecionado, $numero_bilhete . ";")  !== false) echo "checked=\"checked\";" ?> class="esconder" <?php if ($_SESSION['bilhete' . $inicio] == 1) echo "checked"; ?> value="<?php echo $numero_bilhete; ?>" name="bilhete[]" id="bilhete<?php echo $numero_bilhete; ?>" type="checkbox">
-                            <?php echo $numero_bilhete; ?>
-                        </div>
-                    </div>
-                    <?php else : ?>
-                    <div style="margin-bottom:10px;" onclick="javascript: checkar('<?php echo $numero_bilhete; ?>');" class="col-xs-3 bilhete_holder col-sm-4 col-md-2 col-lg-1">
-                        <div id="holder<?php echo $numero_bilhete; ?>" class="col-lg-12 bilhete <?php if ($_SESSION['bilhete' . $j] == 1 || strpos($selecionado, $numero_bilhete . ";")  !== false) echo "bilhete_selected"; ?>">
-                            <input <?php if (strpos($selecionado, $numero_bilhete . ";")  !== false) echo "checked=\"checked\";" ?> class="esconder" <?php if ($_SESSION['bilhete' . $inicio] == 1) echo "checked"; ?> value="<?php echo $numero_bilhete; ?>" name="bilhete[]" id="bilhete<?php echo $numero_bilhete; ?>" type="checkbox">
-                            <?php echo $numero_bilhete; ?>
-                        </div>
-                    </div>
                 <?php 
-                endif;
             
-        
-                ?>
+            } ?>
+    <?php
+    } else {
 
+        $parcial = '';
+        if(isset($parciais) && in_array($inicio, $parciais))
+            $parcial = "venda_parcial";
 
-<?php }
+        if ($rifa_max_bilhetes == 100 && $rifa_dezena_bolao == 0 && $origem == NULL) : ?>
+            <div onclick="javascript: checkar('<?php echo $numero_bilhete; ?>');" class="col-xs-2 bilhete_holder col-sm-4 col-md-2 col-lg-1">
+                <div onclick="scrollOnClick()" id="holder<?php echo $numero_bilhete; ?>" class="col-lg-12 <?= $parcial; ?> bilhete <?php if ($_SESSION['bilhete' . $j] == 1 || strpos($selecionado, $numero_bilhete . ";")  !== false) echo "bilhete_selected"; ?>">
+                    <input <?php if (strpos($selecionado, $numero_bilhete . ";")  !== false) echo "checked=\"checked\";" ?> class="esconder" <?php if ($_SESSION['bilhete' . $inicio] == 1) echo "checked"; ?> value="<?php echo $numero_bilhete; ?>" name="bilhete[]" id="bilhete<?php echo $numero_bilhete; ?>" type="checkbox">
+                    <?php echo $numero_bilhete; ?>
+                </div>
+            </div>
+            <?php else : ?>
+            <div style="margin-bottom:10px;" onclick="javascript: checkar('<?php echo $numero_bilhete; ?>');" class="col-xs-3 bilhete_holder col-sm-4 col-md-2 col-lg-1">
+                <div id="holder<?php echo $numero_bilhete; ?>" class="col-lg-12 bilhete <?php if ($_SESSION['bilhete' . $j] == 1 || strpos($selecionado, $numero_bilhete . ";")  !== false) echo "bilhete_selected"; ?>">
+                    <input <?php if (strpos($selecionado, $numero_bilhete . ";")  !== false) echo "checked=\"checked\";" ?> class="esconder" <?php if ($_SESSION['bilhete' . $inicio] == 1) echo "checked"; ?> value="<?php echo $numero_bilhete; ?>" name="bilhete[]" id="bilhete<?php echo $numero_bilhete; ?>" type="checkbox">
+                    <?php echo $numero_bilhete; ?>
+                </div>
+            </div>
+        <?php 
+        endif;
+        ?>
+<?php 
+    }
 }
 ?>
 <div class="clearfix"></div>

@@ -315,22 +315,16 @@ class Loteamento{
 
 	function gerarPDF($nome){
 
-		$comando = 'xvfb-run wkhtmltopdf --javascript-delay 15000 -L 0mm -R 0mm -T 5mm -B 0mm --page-width 297mm --page-height 211mm http://rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.html /var/www/nevoahost/c/rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.pdf';
-
-		//echo $comando;
-		//die();
-
 		if($this->layout == 2)
 	    	exec('xvfb-run wkhtmltopdf -L 0mm -R 0mm -T 0mm -B 0mm --page-width 210mm --page-height 297mm http://rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.html /var/www/nevoahost/c/rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.pdf');
 	    elseif($this->layout == 5)
 	    	exec('xvfb-run wkhtmltopdf -L 0mm -R 0mm -T 0mm -B 0mm --page-width 297mm --page-height 211mm http://rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.html /var/www/nevoahost/c/rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.pdf');
 	    elseif($this->layout == 6)
-	    	exec($comando);
+	    	exec('xvfb-run wkhtmltopdf --javascript-delay 15000 -L 0mm -R 0mm -T 5mm -B 0mm --page-width 297mm --page-height 211mm http://rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.html /var/www/nevoahost/c/rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.pdf');
 	    else
 	    	exec('xvfb-run wkhtmltopdf -L 0mm -R 0mm -T 0mm -B 0mm --page-width 320mm --page-height 415mm http://rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.html /var/www/nevoahost/c/rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.pdf');
 
 	    return $nome.".pdf";
-
 	}
 
 	function apagarHTMLs(){
@@ -345,6 +339,7 @@ class Loteamento{
 	// Funções auxiliares
 
 	function fwrite_stream($fp, $string) {
+
 	    for ($written = 0; $written < strlen($string); $written += $fwrite) {
 	        $fwrite = fwrite($fp, substr($string, $written));
 	        if ($fwrite === false) {

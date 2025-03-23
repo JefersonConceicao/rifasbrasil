@@ -1,4 +1,5 @@
 <?php
+if (!$_SESSION) @session_start();
 
 include("../class/conexao.php");
 include("../class/function_limparNumero.php");
@@ -15,23 +16,37 @@ $usuario = DBSelect("SELECT * FROM tbl_usuario where usu_cod='$usuario_id'", $my
 
 if ($_GET['comp'])
     $compra = DBSelect("SELECT * FROM tbl_compra where comp_cod ='" . intval($_GET['comp']) . "'", $mysqli);
-else
+else {
+    $todas_compras = db_select($mysqli, "SELECT * FROM tbl_compra where comp_cliente='$usuario_id'");
+    $todas_compras_ids = array();
+    foreach($todas_compras as $comp) {
+        $todas_compras_ids[] = $comp['comp_cod'];
+    }
     $compra = DBSelect("SELECT * FROM tbl_compra where comp_cliente='$usuario_id'", $mysqli);
+}
 
 $vendedor = DBSelect("SELECT * FROM tbl_usuario where usu_cod='{$compra['comp_revendedor']}'", $mysqli);
 $bilhetes = db_select($mysqli, "SELECT * FROM tbl_bilhetes where bil_compra='{$compra['comp_cod']}'");
 $rifa_cod = $bilhetes[0]['bil_rifa'];
 
-$rifa = DBSelect("SELECT r.*, u.usu_nome, u.usu_celular 
+$rifa = DBSelect("SELECT r.*, u.usu_nome, u.usu_celular
     FROM tbl_rifas r, tbl_usuario u 
     where u.usu_cod = r.rifa_dono 
     and rifa_cod='$rifa_cod'
 ", $mysqli);
 $dezenabolao = $rifa['dezena_bolao'];
+$travarBilhetes = $dezenabolao && $rifa['travar_bilhetes'];
+$multiplicador = $rifa['multiplicador'];
+$modoBancaOnline = $rifa['banca_online'];
 
+if($modoBancaOnline && $todas_compras_ids) {
+    $bilhetes = db_select($mysqli, "SELECT * FROM tbl_bilhetes where bil_compra IN (" . implode(',', $todas_compras_ids) . ")");
+}
 
 foreach ($bilhetes as $value) {
     $rifa_cod = $value['bil_rifa'];
+    if($modoBancaOnline)
+        $valorAposta = $value['bil_aposta'];
     if ($dezenabolao)
         $bilhete_str[] = str_pad($value['bil_numero'], 2, '0', STR_PAD_LEFT);
     else
@@ -39,14 +54,45 @@ foreach ($bilhetes as $value) {
 }
 $bilhete_str = implode("-", $bilhete_str);
 
+$bilhetes_str_travados = "";
+if($travarBilhetes) {
+    $pesquisar_compras = array();
+    foreach($todas_compras as $cmp) {
+        $pesquisar_compras[] = " bil_compra = '{$cmp['comp_cod']}' ";
+    }
+    $todos_bilhetes = db_select($mysqli, "SELECT * FROM tbl_bilhetes where " . implode(' OR ', $pesquisar_compras));
+    $lista_organizada = array();
+    
+    foreach($todos_bilhetes as $tb) {
+        if(!isset($lista_organizada[$tb['bil_bilhete_original']])) 
+            $lista_organizada[$tb['bil_bilhete_original']] = array('bil_compra' => $tb['bil_compra'], 'grupo' => $tb['bil_grupo'], 'bilhetes' => array());
+        $lista_organizada[$tb['bil_bilhete_original']]['bilhetes'][] = str_pad($tb['bil_numero'], 2, '0', STR_PAD_LEFT);
+    }
+
+    foreach($lista_organizada as $codigo_do_bilhete => $arr) {
+        $codigo_do_bilhete = str_pad($codigo_do_bilhete, 4, '0', STR_PAD_LEFT);
+        $cod_compra = $arr['bil_compra'];
+        $grupo = $arr['grupo'];
+        $bilhetes_str_travados .= "{$grupo}:{$codigo_do_bilhete} \n\n";
+
+        $bilhetes_lista = array();
+        foreach($arr['bilhetes'] as $bil) {
+            $bilhetes_lista[] = str_pad($bil, 2, '0', STR_PAD_LEFT);
+        }
+        $bilhetes_str_travados .= "[" . implode('-', $bilhetes_lista) . "]\n\n";
+    }
+
+    $bilhetes_str_travados .= "O ID da transação é: \n\n";
+    foreach($lista_organizada as $codigo_do_bilhete => $arr) {
+        $cod_compra = $arr['bil_compra'];
+        $bilhetes_str_travados .= $arr['bil_compra']. "\n";
+    }
+}
 
 $dataSorteio = date('d/m/Y', strtotime($rifa['rifa_dtsorteio']));
 $data = date('d/m/Y H:i', strtotime($compra['comp_data']));
 $telefoneFormatado = "(" . substr($usuario['usu_celular'], 0, 2) . ") " . substr($usuario['usu_celular'], 2, -4) . "-" . substr($usuario['usu_celular'], -4);
 $telefone = $usuario['usu_celular'];
-
-
-if (!$_SESSION) @session_start();
 
 $sms = "RIFASBRASIL: Ola " . primeiroNome($usuario['usu_nome']) . ", seu(s) Bilhete(s): (" . $bilhete_str . ") Da Rifa: (" . $rifa['rifa_titulo'] . ") Sorteio dia: (" . $dataSorteio . ") - " . (($compra['comp_status_revenda'] == 1) ? 'PAGO' : 'NAO PAGO') . " - Boa Sorte!";
 
@@ -62,8 +108,6 @@ while ($row = $dados_bancarios->fetch_assoc()) {
 
 $dados_revendedor = $mysqli->query("SELECT * FROM tbl_usuario WHERE usu_cod = '$cod_revendedor'") or die($mysqli->error);
 $dados_revendedor = $dados_revendedor->fetch_assoc();
-
-
 
 ?>
 <style>
@@ -138,13 +182,12 @@ $dados_revendedor = $dados_revendedor->fetch_assoc();
     <?php endif; ?>
 
 
-
     <div class="spacer"></div>
     <?php if(!isset($_SESSION['usuario_sem_login'])) { ?>
-    <button class="btn btn-success" onclick="javascript:location.href='sms:+55<?php echo $telefone; ?>?body=<?php if ($_GET['sms']) echo $_SESSION['sms'];
+    <button class="btn btn-success" onclick="javascript:location.href='sms:+55<?php echo $telefone; ?>?body=<?php if ($_GET['sms']) echo urlencode($_SESSION['sms']);
                                                                                                             else echo $sms; ?>';">Enviar SMS com dados p/ Cliente</button>
 
-    <button class="btn btn-primary" onclick="window.open('https://wa.me/+55<?php echo $telefone; ?>/?text=<?php if ($_GET['sms']) echo $_SESSION['sms'];
+    <button class="btn btn-primary" onclick="window.open('https://wa.me/+55<?php echo $telefone; ?>/?text=<?php if ($_GET['sms']) echo urlencode($_SESSION['sms']);
                                                                                                             else echo $sms; ?>', '_blank');">Enviar comprovante por WhatsApp</button>
 
     <button class="btn btn-success" onclick="imprimir('cel');">Imprimir Comprovante Celular</button>
@@ -185,14 +228,13 @@ $dados_revendedor = $dados_revendedor->fetch_assoc();
     <p><?php if ($_GET['sms']) echo $_SESSION['sms']; ?></p>
 <?php } ?>
 <div class="col-lg-12 " id="bloco-impressao" style="color:white; text-align:left; font-size:12px">
-WWW.RIFASBRASIL.COM.BR 
+<?= $vendedor['usu_nome'] . "\n"; ?>
 ------------------------
 TITULO DA RIFA: 
 <?= $rifa['rifa_titulo'] . "\n"; ?>
 Sorteio: <?= $dataSorteio . "\n"; ?>
-VENDEDOR: 
-<?= $vendedor['usu_nome'] . "\n"; ?>
-VALOR: R$ <?= number_format($rifa['rifa_valorbilhete'], 2, ',', '.') . "\n"; ?>
+<?= $modoBancaOnline ? 'APOSTA: R$ ' . number_format($valorAposta*count($bilhetes), 2, ',', '.') . "\n" : 'VALOR: R$ ' . number_format($rifa['rifa_valorbilhete'], 2, ',', '.') . "\n"; ?>
+<?php if($modoBancaOnline) echo 'IDS DAS VENDAS: ' . implode(', ', $todas_compras_ids) . "\n"; ?>
 ------------------------
 Data/Hora: 
 <?= $data; ?>
@@ -206,7 +248,8 @@ BILHETE(S): <?= "\n" ?>
 
 [ <?= $bilhete_str; ?> ]
 <?= "\n" ?>
-TOTAL: R$ <?php echo number_format($compra['comp_valortotal'], 2, ',', '.') . "\n"; ?>
+<?php if($modoBancaOnline) echo 'PREMIO: R$ ' . number_format($valorAposta*$multiplicador, 2, ',', '.') . "\n"; else echo 'TOTAL: R$ ' . number_format($compra['comp_valortotal'], 2, ',', '.') . "\n"; ?>
+<?php if($modoBancaOnline && count($bilhetes) > 0) echo 'TOTAL: R$ ' . number_format($valorAposta*count($bilhetes), 2, ',', '.') . "\n"; ?>
 PAGAMENTO: <?php
 if ($compra['comp_status_revenda'] == 1 || $compra['comp_situacao'] == '4' || $compra['comp_situacao'] == '3') {
     echo "SIM - PAGO";
@@ -251,9 +294,9 @@ Rifa\n*<?= $rifa['rifa_titulo']; ?>*\n
 Olá, meu nome é:\n
 *<?php echo $usuario['usu_nome']; ?>*\n
 Por favor, confirmar a RESERVA do(s) bilhete(s):\n
-*[ <?= $bilhete_str; ?> ]*\n
-O ID da transação é: \n
-*<?= $compra['comp_cod'] ?>*\n
+*<?php if($travarBilhetes) echo $bilhetes_str_travados; else echo "[ " . $bilhete_str . " ]"; ?>*\n
+<?php if(!$travarBilhetes) echo "O ID da transação é: \n
+*" . $compra['comp_cod'] . "*\n"; ?>
 Farei o pagamento na(s) conta(s) abaixo:\n\n`;
 
 <?php $i = 0;

@@ -127,6 +127,7 @@ ini_set('max_execution_time', 180); //300 seconds = 5 minutes
 			$lot->apagarPDFs();
 
       if($ativarBolao){
+        $lot->setDezenaBolao(true);
         $lot->setNumeroSurpresinhas(intval($ativarBolao));
         $lot->setStartingGroup($setStartingGroup);
       }

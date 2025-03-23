@@ -30,4 +30,8 @@ if(!function_exists('gerarDezenas')){
 	}
 }
 
+if(isset($_GET['teste_da_surpresinha'])) {
+	//var_dump(gerarDezenas(5079, 9369, 1));
+}
+
 ?>

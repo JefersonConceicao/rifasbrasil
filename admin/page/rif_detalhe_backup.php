@@ -480,7 +480,7 @@ do{
 								<?php if($bil_vendidos > 0) { ?>
 								<button onclick="javascript: if(confirm('Tem certeza disso?')) location.href='index.php?p=finalizar&codigo=<?php echo $rifa[rifa_cod]; ?>';" class="btn btn-success">finalizar rifa</button>
 								<?php } ?>
-								<button onclick="javascript: location.href='index.php?p=editar&codigo=<?php echo $codigo; ?>';" class="btn">editar</button>
+								<button onclick="javascript: location.href='index.php?p=cadastrar&codigo=<?php echo $codigo; ?>';" class="btn">editar</button>
 								<?php if($bil_vendidos == 0) { ?>
 								<button onclick="javascript: location.href='index.php?p=deletar&codigo=<?php echo $codigo; ?>';" class="btn btn-danger">deletar</button>
 								<?php }else{ ?>

@@ -73,6 +73,7 @@ $rifa = intval($_GET['codigo']);
 			<select name="faixa" id="" required class="form-control">
 				<option value="">Selecione</option>
 				<option value="5">1 ao 5</option>
+				<option value="6">1 ao 6</option>
 				<option value="10">1 ao 10</option>
 			</select>
 		</div>

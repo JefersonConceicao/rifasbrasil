@@ -19,7 +19,100 @@ if (isset($_GET['origem']) && $_GET['origem'] == 'revenda') {
 	unset($_SESSION['origem_revenda']);
 }
 
+
+function curl_post_contents($url, $params, $timeout = 10) {
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+
+    curl_setopt($ch, CURLOPT_POST, false);
+
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
+    curl_setopt($c, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data"));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+
+    if(1) {
+        // CURLOPT_VERBOSE: TRUE to output verbose information. Writes output to STDERR, 
+        // or the file specified using CURLOPT_STDERR.
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+
+        $verbose = fopen('php://temp', 'w+');
+        curl_setopt($ch, CURLOPT_STDERR, $verbose);
+    }
+
+    $result = curl_exec($ch);
+
+    if (!$result) {
+        printf("cUrl error (#%d): %s<br>\n", curl_errno($ch),
+               htmlspecialchars(curl_error($ch)));
+
+        rewind($verbose);
+        $verboseLog = stream_get_contents($verbose);
+
+        echo "Verbose information:\n<pre>", htmlspecialchars($verboseLog), "</pre>\n";
+    }
+
+    $err = curl_error($ch);
+    echo $err;
+    curl_close($ch);
+
+    return $result;
+
+}
+
+function enviarWhatsapp ($telefone, $mensagem) {
+	$url = 'https://api.z-api.io/instances/38B4EC3BCB08802E919C0A7940722ACE/token/E686C67AC9151520C0D3479D/send-messages';
+	$ch = curl_init($url);
+
+	$data = array(
+	    'phone' => '55' . preg_replace("/[^0-9]/", "", $telefone),
+	    'message' => $mensagem
+	);
+
+	$res =  curl_post_contents($url, $data, 60);
+	
+}
+
+if(isset($_POST['action']) && $_POST['action'] == 'getUserName') {
+
+	if(!isset($_SESSION))
+		@session_start();
+
+	include("../../class/conexao.php");
+
+	$telefone = preg_replace('/\D/', '', $_POST['telefone']);
+	$usuario = db_select($mysqli, "SELECT usu_nome FROM tbl_usuario WHERE CAST(usu_celular AS UNSIGNED) = '$telefone'", 1);
+	$result = array(
+		'nome' => $usuario['usu_nome']
+	);
+
+	if($_SESSION['cod_rev']) {
+		$rev = db_select($mysqli, "SELECT usu_celular FROM tbl_usuario WHERE usu_cod = '" . $_SESSION['cod_rev'] . "'", 1);
+		$result['tel_revendedor'] = preg_replace('/\D/', '', $rev['usu_celular']);
+	} else {
+		$rev = db_select($mysqli, "SELECT usu_celular FROM tbl_usuario WHERE usu_cod IN (SELECT rifa_dono FROM tbl_rifas WHERE rifa_cod = '" . intval($_POST['rifa']) . "')", 1);
+		$result['tel_revendedor'] = preg_replace('/\D/', '', $rev['usu_celular']);
+	}
+	
+
+	die(json_encode($result));
+}
+
 if(isset($_POST['action']) && $_POST['action'] == 'enviar_comprovante') {
+
+	if(!isset($_SESSION))
+		@session_start();
+
+	if(!isset($_SESSION['usuario']) && !isset($_SESSION['cod_rev']))
+		die(json_encode(array('ok' => false)));
+
+	include("../../class/conexao.php");
 
 	$response = array();
 	if(strpos($_FILES['file']['type'], 'image') === false)
@@ -30,7 +123,29 @@ if(isset($_POST['action']) && $_POST['action'] == 'enviar_comprovante') {
     	$pos = strrpos($_FILES['file']['name'], ".");
  		$new_name = md5(time()) . substr($_FILES['file']['name'], $pos);
         $res = move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/nevoahost/c/rifasbrasil.com.br/arquivos/docs/' . $new_name);
+
+        $telefone = preg_replace("/[^0-9]/", "", $_POST['telefone']);
+        $usuario = db_select($mysqli, "SELECT usu_nome FROM tbl_usuario WHERE CAST(usu_celular AS UNSIGNED) = '$telefone'", 1);
+
+        $msg = "PAGAMENTO IMFORMADO: O cliente " . $usuario['usu_nome'] . " fez um pagamento, clique no link à seguir para visualizar o comprovante: ". PHP_EOL;
+        $msg .= PHP_EOL . "https://rifasbrasil.com.br/arquivos/docs/" . $new_name . PHP_EOL;
+        $msg .= "Ou clique no link para falar com o cliente no Whatsaap: https://api.whatsapp.com/send?phone=55" . $telefone;
+
+
+        $revendedor = false;
+        if($_SESSION['cod_rev']) {
+			$rev = db_select($mysqli, "SELECT usu_celular FROM tbl_usuario WHERE usu_cod = '" . $_SESSION['cod_rev'] . "'", 1);
+			$revendedor = preg_replace('/\D/', '', $rev['usu_celular']);
+		} else {
+			$rev = db_select($mysqli, "SELECT usu_celular FROM tbl_usuario WHERE usu_cod IN (SELECT rifa_dono FROM tbl_rifas WHERE rifa_cod = '" . intval($_POST['rifa']) . "')", 1);
+			$revendedor = preg_replace('/\D/', '', $rev['usu_celular']);
+		}
+
+        if($revendedor)
+        	enviarWhatsapp ($revendedor, $msg);
+        
         $response['ok'] = $res;
+        //$response['file'] = "https://rifasbrasil.com.br/arquivos/docs/" . $new_name;
     }
     
 
@@ -45,7 +160,7 @@ if(isset($_POST['action']) && $_POST['action'] == 'getDetalhes') {
 	if(isset($_POST['telefone'])) {
 
 		$telefone = preg_replace('/\D/', '', $_POST['telefone']);
-		$bilhetes = db_select($mysqli, "SELECT bil_numero, bil_situacao FROM tbl_bilhetes WHERE bil_rifa = '$rifa' AND bil_compra IN (SELECT comp_cod FROM tbl_compra WHERE comp_cliente IN (SELECT usu_cod FROM tbl_usuario WHERE CAST(usu_celular AS UNSIGNED) = '$telefone'))");
+		$bilhetes = db_select($mysqli, "SELECT bil.bil_numero, bil.bil_situacao, comp.comp_situacao, comp.comp_status_revenda FROM tbl_bilhetes bil, tbl_compra comp WHERE bil.bil_rifa = '$rifa' AND bil.bil_compra = comp.comp_cod AND bil.bil_compra IN (SELECT comp_cod FROM tbl_compra WHERE comp_cliente IN (SELECT usu_cod FROM tbl_usuario WHERE CAST(usu_celular AS UNSIGNED) = '$telefone'))");
 		die(json_encode($bilhetes));
 	}
 
@@ -141,10 +256,11 @@ include("../class/conexao.php");
 
 $cod_rifa = intval($_GET['rifa']);
 unset($_SESSION['repetir_venda']);
-$maxbilhetes = DBSelect("select rifa_maxbilhetes as m, dezena_bolao, rifa_dtsorteio FROM tbl_rifas where rifa_cod = '$cod_rifa'", $mysqli);
+$maxbilhetes = DBSelect("select rifa_maxbilhetes as m, dezena_bolao, rifa_dtsorteio, rifa_valorbilhete FROM tbl_rifas where rifa_cod = '$cod_rifa'", $mysqli);
 $dezenabolao = intval($maxbilhetes['dezena_bolao']);
+$valorbilhete = $maxbilhetes['rifa_valorbilhete'];
 
-if (strtotime($maxbilhetes['rifa_dtsorteio'] . " 23:59:59") < time())
+if (strtotime($maxbilhetes['rifa_dtsorteio'] . " 18:39:59") < time())
 	die("<script>alert('Rifa vencida'); location.href='index.php?p=rifas';</script>");
 
 $maxbilhetes = $maxbilhetes['m'];
@@ -466,6 +582,7 @@ if ($queryBil->num_rows > 0)
 
 	}
 
+	var valorBilhete = <?= $valorbilhete; ?>;
 	function checkar(id) {
 		var campo_id = "bilhete" + id;
 		var holder = "holder" + id;
@@ -485,7 +602,7 @@ if ($queryBil->num_rows > 0)
 		} else {
 
 			//Limita o número de bilhetes
-			var count = (bil.value.match(/;/g) || []).length;
+			let count = (bil.value.match(/;/g) || []).length;
 			<?php if ($dezenabolao) { ?>
 				if (count >= <?= $dezenabolao; ?>) {
 					alert("Você só pode adicionar <?= $dezenabolao; ?> bilhetes por compra.");
@@ -510,12 +627,40 @@ if ($queryBil->num_rows > 0)
 			document.getElementById('finalizar').disabled = true;
 		}
 
+		let count = (bil.value.match(/;/g) || []).length;
+		$('#txtBilhetes').html(`Bilhete(s): <b>${bil.value.replace(/;/g, ', ')}</b> adicionado(s). O que gostaria de Fazer?`);
+		$('#somatorio').html(`<b>TOTAL:</b> R$ ${numberFormat(count*valorBilhete, 2, ',', '.')}`);
+
 		$('#modalAdicionado').modal('show');
 		$('#btn_continuar_modal_adicionar').off();
 		$('#btn_continuar_modal_adicionar').click(enviar_formulario);
 
 		//window.scrollTo(0,document.body.scrollHeight);
 
+	}
+
+	function numberFormat (number, decimals, dec_point, thousands_sep) {
+	    // Strip all characters but numerical ones.
+	    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+	    var n = !isFinite(+number) ? 0 : +number,
+	        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+	        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+	        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+	        s = '',
+	        toFixedFix = function (n, prec) {
+	            var k = Math.pow(10, prec);
+	            return '' + Math.round(n * k) / k;
+	        };
+	    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+	    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+	    if (s[0].length > 3) {
+	        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+	    }
+	    if ((s[1] || '').length < prec) {
+	        s[1] = s[1] || '';
+	        s[1] += new Array(prec - s[1].length + 1).join('0');
+	    }
+	    return s.join(dec);
 	}
 
 	function enviar_formulario() {
@@ -537,9 +682,60 @@ if ($queryBil->num_rows > 0)
 	function minhas_compras (){
 		$('#meus_bilhetes_conteudo').addClass('text-center');
 		//$('#enviar_comprovante').hide();
-		$('#enviar_comprovante').off();
+		$('#falar_com_o_adm').off().hide();
+		$('#enviar_comprovante').off().hide();
 		$('#meus_bilhetes_conteudo').html('');
 		$('#meus_bilhetes_modal').modal('show');
+		$('#enviar_comprovante').attr('disabled', false);
+		$('#falar_com_o_adm').click(function() {
+			let telefone = $('#input_telefones').val();
+			$.post('page/ver_bilhetes_mobile_dez_cen.php', {telefone: telefone, action: 'getUserName', rifa: <?php echo $codigo; ?>}, function(res) {
+				res = JSON.parse(res.trim());
+				if(!res.nome)
+					return alert("Telefone inválido");
+				window.open('https://api.whatsapp.com/send?phone=55' + res.tel_revendedor +  '&text=Ol%C3%A1%2C%20me%20chamo%20' + res.nome + '.%20Gostaria%20de%20informa%C3%A7%C3%B5es...');
+			});
+		});
+		$('#enviar_comprovante').text('Enviar Comprovante');
+		$('#enviar_comprovante').click(function() {
+			$('#theFile').click();
+			$('#theFile').change(function() {
+				console.log('upload');
+
+				var form_data = new FormData();
+				var file_data = $('#theFile').prop('files')[0];
+
+				if(!file_data)
+					return;
+
+				form_data.append('file', file_data);
+				form_data.set('action', 'enviar_comprovante');
+				form_data.set('rifa', <?php echo $codigo; ?>);
+				form_data.set('telefone', $('#input_telefones').val().replace(/\D/g,''));
+				$('#enviar_comprovante').text("Aguarde, enviando...");
+				$('#enviar_comprovante').attr('disabled', true);
+				$.ajax({
+					url: 'page/ver_bilhetes_mobile_dez_cen.php', 
+					data: form_data, 
+					dataType: 'json', // what to expect back from the PHP script
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'post',
+					success: function(res) {
+						console.log(res);
+						$('#enviar_comprovante').attr('disabled', false);
+						alert("Comprovante enviado com sucesso!");
+						$('#meus_bilhetes_modal').modal('hide');
+					},
+					error : function(err) {
+						alert("Falhou ao enviar comprovante. Avise o administrador.");
+						console.log(err);
+					}
+				});
+
+			});
+		});
 	}
 
 	function pesquisar_telefone() {
@@ -551,6 +747,7 @@ if ($queryBil->num_rows > 0)
 				end_loading();
 				console.log(res);
 				res = JSON.parse(res.trim());
+
 				
 
 				if(res.length == 0) {
@@ -559,48 +756,32 @@ if ($queryBil->num_rows > 0)
 					let resultados = '';
 					let bil = [];
 					let situacao = '';
+
+					let bil_pago = [];
+					let bil_reservado = [];
 					for(let k in res) {
-						situacao = res[k].bil_situacao == 'P' ? 'PAGO': 'RESERVADO';
-						bil.push(('00000' + res[k].bil_numero).slice(<?= (strlen($maxbilhetes)-1)*-1; ?>));
+						situacao = (res[k].comp_situacao == '3' || res[k].comp_situacao == '4' || res[k].comp_status_revenda == '1') ? true : false;
+						if(situacao)
+							bil_pago.push(('00000' + res[k].bil_numero).slice(<?= (strlen($maxbilhetes)-1)*-1; ?>));
+						else
+							bil_reservado.push(('00000' + res[k].bil_numero).slice(<?= (strlen($maxbilhetes)-1)*-1; ?>));
 					}
 
-					$('#meus_bilhetes_conteudo').html(`<p>CONSTA NO TELEFONE CONSULTADO OS SEGUINTES
-BILHETES/CERTIFICADOS:</p><p>${bil.join(' - ')}</p><hr /><p>SITUAÇÃO: <b>${situacao}</b></p>`);
+					let html = `<p>CONSTA NO TELEFONE CONSULTADO OS SEGUINTES
+BILHETES/CERTIFICADOS:</p>`;
 
-					//if(situacao == 'RESERVADO') {
-						$('#enviar_comprovante').show();
-						$('#enviar_comprovante').click(function() {
-							$('#theFile').click();
-							$('#theFile').change(function() {
-								console.log('upload');
+					if(bil_pago.length) 
+						html += `<p><b>Situação: PAGO</b><br><br>${bil_pago.join(' - ')}</p>`;
 
-								var form_data = new FormData();
-								var file_data = $('#theFile').prop('files')[0];
+					if(bil_reservado.length) 
+						html += `<p><b>Situação: RESERVADO</b><br><br>${bil_reservado.join(' - ')}</p>`;
 
-								form_data.append('file', file_data);
-								form_data.set('action', 'enviar_comprovante');
+					$('#meus_bilhetes_conteudo').html(html);
 
-								$.ajax({
-									url: 'page/ver_bilhetes_mobile_dez_cen.php', 
-									data: form_data, 
-									dataType: 'json', // what to expect back from the PHP script
-				                    cache: false,
-				                    contentType: false,
-				                    processData: false,
-				                    type: 'post',
-									success: function(res) {
-										console.log(res);
-										$('#meus_bilhetes_modal').modal('hide');
-									},
-									error : function(err) {
-										alert("ERRO");
-										console.log(err);
-									}
-								});
 
-							});
-						});
-					//}
+					$('#falar_com_o_adm').show();
+					$('#enviar_comprovante').show();
+					
 					
 				}
 
@@ -632,9 +813,12 @@ BILHETES/CERTIFICADOS:</p><p>${bil.join(' - ')}</p><hr /><p>SITUAÇÃO: <b>${sit
         	
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default float-left pull-left" data-dismiss="modal">Fechar</button>
+      <div class="modal-footer" style="text-align: center;">
+        
+        
+        <button type="button" id="falar_com_o_adm" class="btn btn-success">falar com o ADM</button>
         <button type="button" id="enviar_comprovante" class="btn btn-primary">Enviar Comprovante</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
       </div>
     </div>
 
@@ -675,7 +859,8 @@ BILHETES/CERTIFICADOS:</p><p>${bil.join(' - ')}</p><hr /><p>SITUAÇÃO: <b>${sit
         <h4 class="modal-title">Numero Adicionado no Carrinho de Compras!</h4>
       </div>
       <div class="modal-body text-center">
-        <p>O que gostaria de fazer?</p>
+        <p id="txtBilhetes">O que gostaria de fazer?</p>
+        <p id="somatorio"></p>
         <div class="clearfix"></div>
       </div>
       <div class="modal-footer">
@@ -909,11 +1094,11 @@ if($maxbilhetes > 1000) {
 		</tr>
 		<tr>
 			<td style="padding-bottom:15px;" >
-				<a href="javascript:void(0);" id="disponiveis_count" class="btn btn-sm btn-success" onclick="get_bilhetes('0,9999', <?php echo $cod_rifa; ?>, 'disponivel');">
+				<a href="javascript:void(0);" id="disponiveis_count" class="btn btn-sm btn-success" onclick="get_bilhetes('0,<?= $maxbilhetes; ?>', <?php echo $cod_rifa; ?>, 'disponivel');">
 					<!-- <span class="bilhete"></span> --> LIVRES
 				</a>
 
-				<a href="javascript:void(0);" id="reservados_count"  class="btn btn-sm btn-warning pull-right" onclick="get_bilhetes('0,999', <?php echo $cod_rifa; ?>, 'reservado');">
+				<a href="javascript:void(0);" id="reservados_count"  class="btn btn-sm btn-warning pull-right" onclick="get_bilhetes('0,<?= $maxbilhetes; ?>', <?php echo $cod_rifa; ?>, 'reservado');">
 					<!-- <span class="bilhete-reservado"></span> --> RESERVADOS
 				</a>
 
@@ -921,11 +1106,11 @@ if($maxbilhetes > 1000) {
 		</tr>
 		<tr>
 			<td style="padding-bottom:25px;">
-				<a href="javascript:void(0);" id="outros_count"  class="btn btn-sm btn-primary" onclick="get_bilhetes('0,999', <?php echo $cod_rifa; ?>, 'travado');">
+				<a href="javascript:void(0);" id="outros_count"  class="btn btn-sm btn-primary" onclick="get_bilhetes('0,<?= $maxbilhetes; ?>', <?php echo $cod_rifa; ?>, 'travado');">
 					<!-- <span class="bilhete-travado"></span> --> VENDAS FÍSICAS
 				</a>
 
-				<a href="javascript:void(0);" id="vendidos_count"  class="btn btn-sm btn-danger pull-right" onclick="get_bilhetes('0,999', <?php echo $cod_rifa; ?>, 'vendido');">
+				<a href="javascript:void(0);" id="vendidos_count"  class="btn btn-sm btn-danger pull-right" onclick="get_bilhetes('0,<?= $maxbilhetes; ?>', <?php echo $cod_rifa; ?>, 'vendido');">
 					<!-- <span class="bilhete-vendido"></span> --> VENDAS ONLINE
 				</a>
 
@@ -933,6 +1118,12 @@ if($maxbilhetes > 1000) {
 		</tr>
 		
 	</table>
+	<div class="form-group text-center">
+		<p><button id="meus_numeros" onclick="minhas_compras();" class="btn btn-warning" style="color:black;background-color: #ffd400;
+    border: 1px solid #ffd400;
+    font-weight: bold;
+    text-transform: uppercase;">Meus números</button></p>
+	</div>
 	<p><b>Escolha seu bilhete na lista abaixo</b></p>
 </div>
 <div id="desktop">
@@ -951,6 +1142,6 @@ if($maxbilhetes > 1000) {
 </div>
 <div class="clearfix"></div>
 <script>
-	get_bilhetes('0,9999', <?php echo $cod_rifa; ?>, 'disponivel');
-	get_count('0,9999', <?php echo $cod_rifa; ?>);
+	get_bilhetes('0,<?= $maxbilhetes; ?>', <?php echo $cod_rifa; ?>, 'disponivel');
+	get_count('0,<?= $maxbilhetes; ?>', <?php echo $cod_rifa; ?>);
 </script>

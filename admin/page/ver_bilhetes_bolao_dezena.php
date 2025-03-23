@@ -162,12 +162,16 @@ include("../class/conexao.php");
 
 $cod_rifa = intval($_GET['rifa']);
 
-$maxbilhetes = DBSelect("select rifa_maxbilhetes as m, etapa1, etapa2, qtd_dezenas_etapa_1, qtd_dezenas_etapa_2, dezena_bolao, repetir_dezena, rifa_dtsorteio FROM tbl_rifas where rifa_cod = '$cod_rifa'", $mysqli);
+$maxbilhetes = DBSelect("select rifa_maxbilhetes as m, etapa1, etapa2, qtd_dezenas_etapa_1, qtd_dezenas_etapa_2, dezena_bolao, repetir_dezena, travar_bilhetes, rifa_valorbilhete, rifa_dtsorteio FROM tbl_rifas where rifa_cod = '$cod_rifa'", $mysqli);
 $dezenabolao = intval($maxbilhetes['dezena_bolao']);
 $repetirdezena = (intval($maxbilhetes['repetir_dezena']) == 1) ? true : false;
+$valorbilhete = $maxbilhetes['rifa_valorbilhete'];
+$travado = $maxbilhetes['dezena_bolao'] && $maxbilhetes['travar_bilhetes'];
 
 $proxima_etapa = false;
+$selecao2etapas = false;
 if($maxbilhetes['etapa1'] && $maxbilhetes['etapa2'] && $maxbilhetes['qtd_dezenas_etapa_1'] && $maxbilhetes['qtd_dezenas_etapa_2']) {
+	$selecao2etapas = true;
 	if(isset($_GET['etapa']) && $_GET['etapa'] == 2) {
 		$dezenabolao = $maxbilhetes['qtd_dezenas_etapa_2'];
 		$proxima_etapa = 3;
@@ -175,9 +179,12 @@ if($maxbilhetes['etapa1'] && $maxbilhetes['etapa2'] && $maxbilhetes['qtd_dezenas
 		$dezenabolao = $maxbilhetes['qtd_dezenas_etapa_1'];
 		$proxima_etapa = 2;
 	}
+} else if($maxbilhetes['etapa1'] && $maxbilhetes['qtd_dezenas_etapa_1']) {
+	$dezenabolao = $maxbilhetes['qtd_dezenas_etapa_1'];
+	$proxima_etapa = 3;
 }
 
-if (strtotime($maxbilhetes['rifa_dtsorteio'] . " 23:59:59") < time())
+if (time() >= strtotime($maxbilhetes['rifa_dtsorteio'] . " 18:40:00"))
 	die("<script>alert('Rifa vencida'); location.href='index.php?p=rifas';</script>");
 
 $maxbilhetes = $maxbilhetes['m'];
@@ -250,6 +257,7 @@ if ($queryBil->num_rows > 0)
 	} while ($bil = $queryBil->fetch_assoc());
 ?>
 <script>
+	var valorBilhete = <?= $valorbilhete; ?>;
 	function padLeft(nr, n, str) {
 		return Array(n - String(nr).length + 1).join(str || '0') + nr;
 	}
@@ -285,7 +293,27 @@ if ($queryBil->num_rows > 0)
 		// quando a quantidade de dezenas é atingida, essa função é chamada
 
 		$('#modal').modal('show');
-		$('#texto_do_modal').html("As <?= $dezenabolao; ?> dezenas desta aposta já foram selecionadas. Escolha uma opção abaixo.");
+
+		let txt1Etapa = "<p>As <?= $dezenabolao; ?> dezenas desta aposta já foram selecionadas.</p><p>Clique em <b>OK</b> para continuar.</p>";
+		let txt2Etapa = "<p>As <?= $dezenabolao; ?> dezenas desta aposta já foram selecionadas.</p><p>Clique em <b>OK</b> para continuar ou se quiser adicionar mais uma aposta, clique em <b>Nova Aposta</b>.</p>"
+
+		let txt = '';
+		$("#btn_nova_aposta").show();
+		if(<?= $selecao2etapas ? 1:0; ?> && <?= !isset($_GET['etapa']) ? 1:0; ?>) {
+			txt = txt1Etapa;
+			$("#btn_nova_aposta").hide();
+		}else if(<?= $selecao2etapas ? 1:0; ?> && <?= isset($_GET['etapa']) ? 1:0; ?>) 
+			txt = txt2Etapa;
+		else
+			txt = txt2Etapa;
+
+
+		$('#texto_do_modal').html(txt);
+
+		//1 etapa: As dezenas desta etapa já foram selecionadas, clique em OK para continuar. -- esconder Nova Aposta
+		// 2 etapa: <p>As <?= $dezenabolao; ?> dezenas desta aposta já foram selecionadas.</p><p>Clique em <b>OK</b> para continuar ou se quiser adicionar mais uma aposta, clique em <b>Nova Aposta</b>.</p>
+
+		// qnd for 1 etapa só: <p>As <?= $dezenabolao; ?> dezenas desta aposta já foram selecionadas.</p><p>Clique em <b>OK</b> para continuar ou se quiser adicionar mais uma aposta, clique em <b>Nova Aposta</b>.</p>
 
 	}
 
@@ -568,10 +596,37 @@ if ($queryBil->num_rows > 0)
 
 	}
 
+	function numberFormat (number, decimals, dec_point, thousands_sep) {
+	    // Strip all characters but numerical ones.
+	    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
+	    var n = !isFinite(+number) ? 0 : +number,
+	        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+	        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+	        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+	        s = '',
+	        toFixedFix = function (n, prec) {
+	            var k = Math.pow(10, prec);
+	            return '' + Math.round(n * k) / k;
+	        };
+	    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+	    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+	    if (s[0].length > 3) {
+	        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+	    }
+	    if ((s[1] || '').length < prec) {
+	        s[1] = s[1] || '';
+	        s[1] += new Array(prec - s[1].length + 1).join('0');
+	    }
+	    return s.join(dec);
+	}
+
 	function checkar(id) {
 		var campo_id = "bilhete" + id;
 		var holder = "holder" + id;
 		var bil = document.getElementById('bilhetes_selecionados');
+
+		
+		
 
 		if (document.getElementById(campo_id).checked) {
 
@@ -582,9 +637,9 @@ if ($queryBil->num_rows > 0)
 		} else {
 
 			//Limita o número de bilhetes
-			var count = (bil.value.match(/;/g) || []).length;
+			let count = (bil.value.match(/;/g) || []).length;
 			<?php if ($dezenabolao) { ?>
-				if (count >= <?= $dezenabolao; ?>) {
+				if (count > <?= $dezenabolao-1; ?>) {
 					$("#loader").css("display", "none");
 					return estourou_limite();
 				}
@@ -608,21 +663,52 @@ if ($queryBil->num_rows > 0)
 			<?php } ?>
 			bil.value += id + ';';
 
+			<?php if ($dezenabolao) { ?>
+				if (count == <?= $dezenabolao-1; ?>) {
+					$("#loader").css("display", "none");
+					return estourou_limite();
+				}
+			<?php } else { ?>
+				if (count == 5) {
+					alert("Você só pode adicionar 5 bilhetes por compra.");
+					$("#loader").css("display", "none");
+					return;
+				}
+			<?php } ?>
+
 		}
+
+		<?php if($travado) { ?>
+			let count = (bil.value.match(/;/g) || []).length;
+			console.log('count', count);
+			let total = "R$ " + numberFormat(count*valorBilhete, 2, ',', '.');
+			if(document.getElementById(campo_id).checked) {
+				$('#showAdicionado').html(`Bilhete(s): <b>${bil.value.replace(/;/g, ', ')}</b> adicionado(s). O que gostaria de Fazer?`);
+				$("#showTotal").html(`<b>TOTAL: </b>` + total);
+				$('#modalAdicionado').modal('show');
+				$('#btn_continuar_modal_adicionar').off();
+				$('#btn_continuar_modal_adicionar').click(enviar_formulario);
+			}
+		
+		<?php } ?>
 
 	}
 
 	function nova_aposta() {
 		$('#voltar_e_inserir_mais').val('true');
-		enviar_formulario();
+		enviar_formulario(true);
 	}
 
-	function enviar_formulario() {
+	function enviar_formulario(voltar_etapa = false) {
 
 		var bilhetes = document.getElementById('bilhetes_selecionados');
 		var dezenabolao = <?= ($dezenabolao > 0) ? 'true' : 'false'; ?>;
 		var count = (bilhetes.value.match(/;/g) || []).length;
 		var form = $('#formulario_real');
+
+		if(voltar_etapa) {
+			form.attr('action', form.attr('action').replace('etapa=', 'void='));
+		}
 
 		if (bilhetes.value.slice(-1) != ';')
 			bilhetes.value += ';';
@@ -643,7 +729,7 @@ if ($queryBil->num_rows > 0)
 
 				if (isNaN(todos_bilhetes[i]))
 					return alert('Bilhete ' + todos_bilhetes[i] + ' inválido');
-				todos_bilhetes[i] = ('00' + todos_bilhetes[i].trim()).slice(-2);
+				todos_bilhetes[i] = ('00' + todos_bilhetes[i].trim()).slice(-<?= $travado ? (strlen($maxbilhetes)-1):2; ?>);
 				if (!repetidos[todos_bilhetes[i]])
 					repetidos[todos_bilhetes[i]] = true;
 				else
@@ -658,7 +744,7 @@ if ($queryBil->num_rows > 0)
 				bilhetes.value = todos_bilhetes.join(';') + ';';
 			<?php } ?>
 
-			if (dezenabolao) {
+			if (dezenabolao && <?= $travado ? 0:1; ?>) {
 				if (todos_bilhetes.length < <?= $dezenabolao; ?>) return alert('Você precisa escolher pelo menos <?= $dezenabolao; ?> bilhetes');
 				if (todos_bilhetes.length > <?= $dezenabolao; ?>) return alert('Você pode escolher no máximo <?= $dezenabolao; ?> bilhetes');
 				<?php if ($repetirdezena != true) { ?>
@@ -749,10 +835,33 @@ if ($queryBil->num_rows > 0)
 		text-align: center;
 	}
 </style>
+<!-- Modal -->
+<div id="modalAdicionado" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Numero Adicionado no Carrinho de Compras!</h4>
+      </div>
+      <div class="modal-body text-center">
+        <p id="showAdicionado"></p>
+        <p id="showTotal"></p>
+        <div class="clearfix"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success pull-left" data-dismiss="modal">Add + Número</button>
+        <button id="btn_continuar_modal_adicionar" type="button" class="btn btn-success">Continuar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 <?php
 //verifica se o usuario é um usuario de link
 if ($_SESSION['usuario_sem_login']) {	?>
-	<div class="col-sm-12 text-center">
+	<div <?php if($travado) echo 'style="margin-bottom:20px;"'; ?> class="col-sm-12 text-center">
 		<div style="background:	#FE7F1E; width:50%; margin:auto; margin-bottom:1%; height:2.5em">
 			<p style="text-align: center; vertical-align: middle; line-height: 2.5em; font-weight:bold; color:white"><?= $rifa['rifa_titulo']; ?></p>
 		</div>
@@ -770,11 +879,18 @@ if ($_SESSION['usuario_sem_login']) {	?>
 		</h5>
 	</div>
 <?php } ?>
+<?php if(!$travado) { ?>
 <div class="col-xs-12 form-group text-center">
 	<small>Escolha um número clicando em cima dele ou digite aqui</small>
 </div>
 <hr>
+<?php } else { ?>
+<div class="col-xs-12 form-group text-center">
+	<small>SELECIONE SEU NUMERO NA LISTA ABAIXO:</small>
+</div>
+<?php } ?>
 <div id="result" class="esconder"></div>
+<?php if(!$travado) { ?>
 <div class="col-xs-12 form-group text-center">
 
 	<input class="form-control" id="bil_busca" name="bil_busca" type="text">
@@ -795,6 +911,8 @@ if ($_SESSION['usuario_sem_login']) {	?>
 	<button type="button" onclick="javascript: surpresinha();" class="btn btn-warning btn-xs btn-primary">SURPRESINHA</button>
 	<button type="button" onclick="javascript: modalSurpresinhaGrupo();" class="btn btn-warning btn-xs">VENDER POR GRUPO</button>
 </div>
+<?php } ?>
+
 <!--<div style="padding:35px; text-align:center;">
 				<span class="bilhete">00</span> Bilhete disponível
 				<span class="bilhete-travado">00</span> Bilhete Travado
@@ -810,9 +928,11 @@ if ($_SESSION['usuario_sem_login']) {	?>
 																								echo '&etapa=' . $_GET['etapa'];
 																							} ?>" id="formulario_real" method="post">
 		<input type="hidden" name="voltar_e_inserir_mais" id="voltar_e_inserir_mais" value="false">
-		<textarea rows="3" class="form-control" placeholder="Bilhetes separados por ponto e vírgula, ex: 01;03;12" name="bilhetes_selecionados" id="bilhetes_selecionados"></textarea>
+		<textarea rows="3" <?php if($travado) echo 'style="display:none;"'; ?> class="form-control" placeholder="Bilhetes separados por ponto e vírgula, ex: 01;03;12" name="bilhetes_selecionados" id="bilhetes_selecionados"></textarea>
 	</form>
+	<?php if(!$travado){ ?>
 	<button type="button" onclick="enviar_formulario();" id="finalizar" class="btn btn-success" style="margin:10px;">Prosseguir</button>
+	<?php } ?>
 </div>
 <div class="clearfix"></div>
 
@@ -863,7 +983,7 @@ if ($_SESSION['usuario_sem_login']) {	?>
 		<!-- Modal content-->
 		<div class="modal-content">
 			<div class="modal-body">
-				<div id="texto_do_modal"></div>
+				<div id="texto_do_modal" class="text-center"></div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" id="btn_nova_aposta" onclick="nova_aposta();" class="btn btn-default" data-dismiss="modal">Nova Aposta</button>

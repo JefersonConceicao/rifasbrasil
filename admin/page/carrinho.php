@@ -114,7 +114,7 @@ if (isset($_SESSION['carrinho_admin']) && is_array($_SESSION['carrinho_admin']) 
             $sql_add .= " rifa_cod = '$ch' OR";
       }
       $sql_add = substr($sql_add, 0, -2);
-      $sql_code = "SELECT rifa_cod, rifa_valorbilhete, dezena_bolao, rifa_titulo, rifa_maxbilhetes 
+      $sql_code = "SELECT rifa_cod, rifa_valorbilhete, travar_bilhetes, dezena_bolao, multiplicador, banca_online, rifa_titulo, rifa_maxbilhetes 
 	FROM tbl_rifas 
 	WHERE ({$sql_add}) 
 	AND (rifa_vencedor IS NULL OR rifa_vencedor = '')";
@@ -122,9 +122,18 @@ if (isset($_SESSION['carrinho_admin']) && is_array($_SESSION['carrinho_admin']) 
       $rifa_tmp = $sql_query->fetch_assoc();
       $rifa = array();
       $valor_total = 0;
+      $rMultiplicador = array();
+      $modoBancaOnline = false;
+      $multiplicador = 1;
       do {
             $rifa[] = $rifa_tmp['rifa_cod'];
             $rTitulo[$rifa_tmp['rifa_cod']] = $rifa_tmp['rifa_titulo'];
+            $rTravada[$rifa_tmp['rifa_cod']] = $rifa_tmp['travar_bilhetes'] && $rifa_tmp['dezena_bolao'];
+            if($rifa_tmp['multiplicador'])
+                  $multiplicador = $rifa_tmp['multiplicador'];
+            if($rifa_tmp['banca_online'])
+                  $modoBancaOnline = true;
+            $rifaTravada = $rifa_tmp['travar_bilhetes'] && $rifa_tmp['dezena_bolao'];
             $rPreco[$rifa_tmp['rifa_cod']] = $rifa_tmp['rifa_valorbilhete'];
             $valor_total += (count($_SESSION['carrinho_admin'][$rifa_tmp['rifa_cod']]) * $rifa_tmp['rifa_valorbilhete']);
 
@@ -147,6 +156,7 @@ $cli = DBExecute("SELECT * FROM tbl_usuario where usu_cod = '{$_SESSION['usuario
 $cliente = $cli->fetch_assoc();
 $com      = DBExecute("SELECT comissao FROM tbl_revendedor where rifa_cod = '$ch' and usu_cod = '{$_SESSION['usuario']}'", $mysqli);
 $comissao = $com->fetch_assoc();
+
 ?>
 <div class="col-lg-8">
       <h3>Carrinho</h3>
@@ -158,13 +168,18 @@ $comissao = $com->fetch_assoc();
                               <td width="50%">Rifa</td>
                               <td><?php if ($_SESSION['rifa_dezena_bolao']) echo "Apostas/Bilhetes";
                                           else echo 'Bilhetes'; ?></td>
-                              <td>Subtotal</td>
-                              <td>Total</td>
+                              <td><?php if($modoBancaOnline) echo "Aposta"; else echo "Subtotal"; ?></td>
+                              <td><?php if($modoBancaOnline) echo "Pode Ganhar"; else echo "Total"; ?></td>
                               <td></td>
                         </tr>
                         <?php
                               if (is_array($rifa))
-                                    foreach ($rifa as $cod) { ?>
+                                    foreach ($rifa as $cod) {
+
+                                          $aposta = false;
+                                          
+
+                                          ?>
                               <tr>
                                     <td><?php echo $rTitulo[$cod]; ?></td>
                                     <td>
@@ -176,6 +191,9 @@ $comissao = $com->fetch_assoc();
                                                       $apostas_bolao = array();
                                                       if (is_array($_SESSION['carrinho_admin'][$cod])) {
                                                             foreach ($_SESSION['carrinho_admin'][$cod] as $indice => $bilhete) {
+                                                                  //$rTravada[$rifa_tmp['rifa_cod']]
+                                                                  if($modoBancaOnline)
+                                                                        $aposta = $_SESSION['aposta'][$cod][intval($bilhete)];
 
                                                                   if (!$_SESSION['rifa_dezena_bolao'])
                                                                         $r .= str_pad($bilhete, strlen($nmax[$cod]) - 1, "0", STR_PAD_LEFT) . " [<a href='javascript: void(0);' onclick='remover_bilhete($cod, $indice);'>X</a>], ";
@@ -183,7 +201,45 @@ $comissao = $com->fetch_assoc();
                                                                         if (!isset($apostas_bolao[$current_aposta]))
                                                                               $apostas_bolao[$current_aposta] = array();
                                                                         $apostas_bolao[$current_aposta][] = $bilhete;
-                                                                        $r .= str_pad($bilhete, 2, "0", STR_PAD_LEFT) . "<!--[<a href='javascript: void(0);' onclick='remover_bilhete($cod, $indice);'>X</a>]-->, ";
+
+                                                                        
+
+                                                                        if($rTravada[$cod]) {
+                                                                              //$bilhetes = curl_get_contents("http://rifasbrasil.com.br/servidor/new_server/buscar_bilhetes.php?action=get_serie&rifa={$cod}&layout=1&bilhete={$bilhete}");
+                                                                              //$bilhetes = json_decode($bilhetes, 1);
+                                                                              $bilhetes = gerarDezenas($cod, $bilhete);
+                                                                              $bilhetesf = array();
+                                                                              $bilhetesint = array();
+                                                                              foreach($bilhetes as $bil) {
+                                                                                    $bilhetesint[] = "bil_numero = " . $bil;
+                                                                                    $bilhetesf[] = str_pad($bil, 2, "0", STR_PAD_LEFT);
+                                                                              }
+
+                                                                              // pode ser que exista mais de uma venda composta pelos 10 números, se der problema verificar.
+                                                                              $editar_venda = DBExecute("SELECT count(*) as n, bil_compra FROM tbl_bilhetes where (" . implode(' OR ', $bilhetesint) . ") AND bil_rifa = " . $cod . " GROUP BY bil_compra HAVING n = " . count($bilhetesint), $mysqli);
+                                                                              $editar_venda = $editar_venda->fetch_assoc();
+                                                                              //var_dump($editar_venda['bil_compra']);
+                                                                              if($editar_venda['bil_compra']) {
+                                                                                    if(count($_SESSION['carrinho_admin'][$cod]) > 0) {
+                                                                                          if(!isset($_SESSION['compra_ja_feita']))
+                                                                                                $_SESSION['compra_ja_feita'] = array();
+                                                                                          $_SESSION['compra_ja_feita'][$bilhete] = $editar_venda['bil_compra'];
+                                                                                    } else 
+                                                                                          $_SESSION['compra_ja_feita'] = $editar_venda['bil_compra'];
+                                                                                    $sql_code_editar_venda = "SELECT *
+                                                                                          FROM tbl_compra, tbl_usuario
+                                                                                          WHERE comp_cod = '{$editar_venda['bil_compra']}' and usu_cod = comp_cliente limit 1";
+                                                                                    $sql_query_editar_venda = $mysqli->query($sql_code_editar_venda) or die($mysqli->error);
+                                                                                    $compra = $sql_query_editar_venda->fetch_assoc();
+                                                                                    $_SESSION['tipo_venda'] = 'paga';
+                                                                              }
+
+                                                                              $dezenasQueFazemParte = implode(', ', $bilhetesf);
+                                                                              $r .= "<B>" . str_pad($bilhete, strlen($nmax[$cod]) - 1, "0", STR_PAD_LEFT) . "</b>: " . $dezenasQueFazemParte . "<br>";
+                                                                        }
+                                                                        else
+                                                                              $r .= str_pad($bilhete, 2, "0", STR_PAD_LEFT) . " ";
+                                                                        $r .= "<!--[<a href='javascript: void(0);' onclick='remover_bilhete($cod, $indice);'>X</a>]-->";
                                                                         /*str_pad($bilhete, 2, "0", STR_PAD_LEFT).", ";*/
                                                                   }
 
@@ -205,8 +261,8 @@ $comissao = $com->fetch_assoc();
 
                                                       ?>
                                     </td>
-                                    <td>R$ <?php echo number_format(($rPreco[$cod]), 2, ',', '.'); ?></td>
-                                    <td>R$ <?php echo number_format(($nBilhetes * $rPreco[$cod]), 2, ',', '.'); ?></td>
+                                    <td>R$ <?php if($aposta) echo number_format($aposta, 2, ',', '.'); else echo number_format(($rPreco[$cod]), 2, ',', '.'); ?></td>
+                                    <td>R$ <?php if($aposta) echo number_format($aposta * $multiplicador, 2, ',', '.'); else echo number_format(($nBilhetes * $rPreco[$cod]), 2, ',', '.'); ?></td>
                                     <td class="text-right">
                                           <a href="index.php?p=carrinho&remover=<?php echo $cod; ?>"><img width="16" src="../img/deletar.png" alt=""></a>
                                     </td>
@@ -215,7 +271,7 @@ $comissao = $com->fetch_assoc();
                   </table>
 
                   <?php
-                        if (isset($_SESSION['rifa_dezena_bolao']) && $_SESSION['rifa_dezena_bolao'] != false && (!isset($_SESSION['qr_order']) || $_SESSION['qr_order'] == false)) {
+                        if (isset($_SESSION['rifa_dezena_bolao']) && !$rifaTravada && $_SESSION['rifa_dezena_bolao'] != false && (!isset($_SESSION['qr_order']) || $_SESSION['qr_order'] == false)) {
 
                               unset($_SESSION['series_customizadas']);
                               //var_dump($series_proibidas);
@@ -348,7 +404,7 @@ $comissao = $com->fetch_assoc();
       <div class="col-lg-12 text-center">
             <?php if ($valor_total > 0)
                         echo "<h4>TOTAL R$ <span id='valor_total'>" . $valor_total . "</span></h4>"; ?>
-            <button onclick="javascript: goToPage();" class="btn-success btn">Finalizar Compra</button>
+            <button onclick="javascript: goToPage();" id="finalizar_compra" class="btn-success btn">Finalizar Compra</button>
       </div>
 <?php } ?>
 <!-- Modal -->
@@ -708,23 +764,51 @@ $comissao = $com->fetch_assoc();
       function goToPage() {
 
             function callback() {
-                  let vTotal = <?= $valor_total; ?>,
-                        nTotal = parseFloat($('#valor_total').html());
+                  let vTotal = <?= $valor_total; ?>, nTotal = parseFloat($('#valor_total').html());
+                  
+                  <?php
+                  if ($_SESSION['rifa_dezena_bolao']) {
+                        echo "let rifa_dezena_bolao_ajax = true;";
+                        $link = "finalizar_pedido_bolao_dezena";
+                  } else {
+                        echo "let rifa_dezena_bolao_ajax = false;";
+                        $link = "finalizar_pedido";
+                  }
+                  ?>
+
                   if (vTotal > nTotal) {
                         // significa que houve desconto
-                        <?php
-                        if ($_SESSION['rifa_dezena_bolao'])
-                              $link = "finalizar_pedido_bolao_dezena";
-                        else
-                              $link = "finalizar_pedido";
-                        ?>
-
                         location.href = 'index.php?p=<?= $link; ?>&desconto=' + document.getElementById('desconto').value;
                   } else {
-                        location.href = 'index.php?p=<?= $link; ?>';
+
+                        if(rifa_dezena_bolao_ajax) {
+
+                              $('#finalizar_compra').hide();
+                              $('#finalizar_compra').after(`<p><progress id="progresso_fake" value="0" max="100"> 0% </progress><br><small><b>Aguarde Registrando Dados...</b></small></p>`);
+                              let start = 0;
+                              let interval = setInterval(function() {
+                                    start += 5;
+                                    $('#progresso_fake').val(start).html(` ${start}% `);
+                                    if(start >= 100)
+                                          clearInterval(interval);
+                              }, 500);
+
+                              $.post('/admin/page/<?= $link; ?>.php?ajax=true&desconto=' + document.getElementById('desconto').value, {})
+                              .done(function(r) {
+                                    console.log(r);
+                                    r = JSON.parse(r.trim());
+                                    location.href = r.url;
+                              }).fail(function(r) {
+                                    console.log(r);
+                                    alert( "Falhou ao processar o pedido. Avise o administrador.")
+                              });
+
+                        } else 
+                              location.href = 'index.php?p=<?= $link; ?>';
+
                   }
             }
-            <?php if (isset($_SESSION['rifa_dezena_bolao']) && $_SESSION['rifa_dezena_bolao'] != false && (!isset($_SESSION['qr_order']) || $_SESSION['qr_order'] == false)) { ?>
+            <?php if (isset($_SESSION['rifa_dezena_bolao']) && !$rifaTravada && $_SESSION['rifa_dezena_bolao'] != false && (!isset($_SESSION['qr_order']) || $_SESSION['qr_order'] == false)) { ?>
 
                   let series = [];
                   $('.serie_escolher').each(function() {

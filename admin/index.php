@@ -17,7 +17,6 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario'] == 0 || !is_numeric($_S
   }
 }
 
-
 include("../class/conexao.php");
 $cont = db_select($mysqli, "select count(*) as t from lote l, tbl_rifas r, tbl_usuario u where l.grafica = '" . $_SESSION['usuario'] . "' and l.rifa = r.rifa_cod and u.usu_cod = r.rifa_dono and l.impresso = 0", 1);
 $contagem_impressao = $cont['t'];
@@ -188,7 +187,7 @@ if ($_SERVER['SERVER_NAME'] === 'localhost')
       if (isset($_GET['p']))
         include("page/" . $_GET['p'] . ".php");
       else {
-        if ($_SESSION[admin] == 'S')
+        if ($_SESSION['admin'] == 'S')
           include("page/usuario.php");
         else include("page/rifa.php");
       }
@@ -203,6 +202,7 @@ if ($_SERVER['SERVER_NAME'] === 'localhost')
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>

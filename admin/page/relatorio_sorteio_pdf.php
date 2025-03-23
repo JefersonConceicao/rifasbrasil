@@ -109,7 +109,14 @@ if($sorteio && count($sorteios_arr) > 0){
 
 			$linha[$k] .= $pontos;
 
-			$linha[$k] .= " pontos </td></tr>";
+			$linha[$k] .= " pontos </td>";
+
+			if($compra['comp_grupo'] != null) 
+				$linha[$k] .= "<td>" . getNameFromNumber($compra['comp_grupo']) . "</td>";
+			else
+				$linha[$k] .= "<td></td>";
+
+			$linha[$k] .= "</tr>";
 
 
 			$todas_compras_finais[$pontos][] = $k;
@@ -161,6 +168,7 @@ table {
 					<td>Bilhetes (<span style="color:green;">ACERTOS</span>/<span style="color:red;">PENDENTES</span>)</td>
 					<td>Data da Aposta</td>
 					<td>Pontuação</td>
+					<td>Grupos</td>
 				</tr>
 			</thead>
 			<tbody>

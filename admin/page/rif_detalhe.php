@@ -88,16 +88,29 @@ $codigo = intval($_GET['codigo']);
 
 // pega o valor do bilhete da rifa
 
-$rifa_sql  = "SELECT rifa_valorbilhete, rifa_titulo, rifa_maxbilhetes, rifa_dtsorteio from tbl_rifas where rifa_cod = '$codigo' limit 1";
-
+$rifa_sql  = "SELECT rifa_valorbilhete, rifa_titulo, dezena_bolao, travar_bilhetes, banca_online, multiplicador, rifa_maxbilhetes, rifa_dtsorteio, rifa_dono from tbl_rifas where rifa_cod = '$codigo' limit 1";
 $rifa_exec = $mysqli->query($rifa_sql) or die($mysqli->error);
-
 $rifa_data = $rifa_exec->fetch_assoc();
 
+$modoBancaOnline = $rifa_data['banca_online'];
+$multiplicador = $rifa_data['multiplicador'];
+$travarBilhetesDezenaBolao = $rifa_data['travar_bilhetes'] && $rifa_data['dezena_bolao'];
 
+$is_revendedor = false;
+if($_SESSION['usuario'] != $rifa_data['rifa_dono']) {
 
-$valor_bilhete = $rifa_data['rifa_valorbilhete'];
+	// verifica se é um revendedor
+	$sql_revendedores = "SELECT COUNT(*) as num FROM tbl_revendedor WHERE rifa_cod = '$codigo' AND usu_cod = '{$_SESSION['usuario']}'";
+	$query_revendedores = $mysqli->query($sql_revendedores) or die($mysqli->error);
+	$is_revendedor = $query_revendedores->fetch_assoc();
 
+	if($is_revendedor['num'] == 0 || !$is_revendedor['num'] || !$is_revendedor)
+		die("Não autorizado");
+	else
+		$is_revendedor = true;
+}
+
+$valor_bilhete = $rifa_data['rifa_valorbilhete'] || 1;
 $max_bilhetes = $rifa_data['rifa_maxbilhetes'];
 
 $rifa_dtsorteio = $rifa_data['rifa_dtsorteio'];
@@ -120,6 +133,8 @@ $NumeroTotalDeVendas = $rifa_data['n'];
 $sql_comissoes = "SELECT * 
 from tbl_revendedor 
 WHERE rifa_cod = '$codigo'";
+if($is_revendedor)
+	$sql_comissoes .= " AND usu_cod = '{$_SESSION['usuario']}' ";
 $qr_comissoes  = $mysqli->query($sql_comissoes) or die($mysqli->error);
 $dados = $qr_comissoes->fetch_assoc();
 
@@ -134,6 +149,14 @@ FROM tbl_bilhetes b, tbl_compra c
 WHERE b.bil_rifa = '$codigo'
 AND c.comp_cod = b.bil_compra
 GROUP BY b.bil_compra";
+if($is_revendedor) {
+	$sql_descontos = "SELECT count(*) as n, c.comp_valortotal, b.bil_compra
+	FROM tbl_bilhetes b, tbl_compra c
+	WHERE b.bil_rifa = '$codigo'
+	AND c.comp_cod = b.bil_compra
+	AND c.comp_revendedor = '{$_SESSION['usuario']}'
+	GROUP BY b.bil_compra";
+}
 $qr_descontos  = $mysqli->query($sql_descontos) or die($mysqli->error);
 $dados = $qr_descontos->fetch_assoc();
 
@@ -165,7 +188,29 @@ WHERE bil_rifa = '$codigo'
 AND bil_compra IN(select comp_cod from tbl_compra where comp_revendedor is not null and comp_revendedor > 0) 
 AND comp_cod = bil_compra 
 ORDER BY tbl_compra.comp_cod DESC";
-
+if($is_revendedor) {
+	$sql_rev = "SELECT 
+	tbl_bilhetes.*, 
+	tbl_compra.comp_cod,
+	tbl_compra.comp_status_revenda, 
+	tbl_compra.comp_situacao, 
+	tbl_compra.comp_desconto, 
+	tbl_compra.comp_valortotal,
+	tbl_compra.comp_data,
+	usu.usu_nome as Usuario,
+	usu.usu_cod as UsuarioCod,
+	usu2.usu_nome as Cliente,
+	usu2.usu_cod as ClienteCod,
+	usu2.usu_celular as ClienteCelular,
+	(((select count(*) as n from tbl_bilhetes where bil_compra = tbl_compra.comp_cod)*$valor_bilhete)-tbl_compra.comp_valortotal) as desconto
+	FROM tbl_bilhetes, tbl_compra 
+	LEFT JOIN tbl_usuario usu ON usu.usu_cod = tbl_compra.comp_revendedor
+	LEFT JOIN tbl_usuario usu2 ON usu2.usu_cod = tbl_compra.comp_cliente
+	WHERE bil_rifa = '$codigo'  
+	AND bil_compra IN(select comp_cod from tbl_compra where comp_revendedor = '{$_SESSION['usuario']}') 
+	AND comp_cod = bil_compra 
+	ORDER BY tbl_compra.comp_cod DESC";
+}
 
 $qr_rev = $mysqli->query($sql_rev) or die($mysqli->error);
 $fe_rev = $qr_rev->fetch_assoc();
@@ -234,7 +279,7 @@ $qr_rev = $mysqli->query($sql_rev) or die($mysqli->error);
 
 $fe_rev = $qr_rev->fetch_assoc();
 
-
+if(!$is_revendedor) {
 ?><div class="col-lg-12 text-left">
 
 	<h3>Detalhes da Rifa</h3>
@@ -486,13 +531,14 @@ $fe_rev = $qr_rev->fetch_assoc();
 
 
 </div>
-
-<div class="col-lg-6">
+<?php } ?>
+<div class="col-lg-<?php if(!$is_revendedor) echo 6; else echo 12; ?>">
 
 
 
 	<div class="col-lg-12 text-center" id="div_link">
 
+		<?php if(!$is_revendedor) { ?>
 		<p>Extrato oculto. <a href="javascript: void(0);" onclick="toggleExtrato();">Clique aqui</a> para exibir.</p>
 
 		<hr>
@@ -502,8 +548,9 @@ $fe_rev = $qr_rev->fetch_assoc();
 
 
 	<div class="hidden" id="div_extrato">
+		<?php } ?>
 
-		<p>Revenda <small><a href="javascript:void(0);" onclick="toggleExtrato();">(ocultar)</a></small></p>
+		<p>Revenda <?php if(!$is_revendedor) { ?><small><a href="javascript:void(0);" onclick="toggleExtrato();">(ocultar)</a></small><?php } ?></p>
 
 		<?php
 
@@ -525,7 +572,7 @@ $fe_rev = $qr_rev->fetch_assoc();
 
 			?>
 
-			<div class="table-responsive">
+			<div class="<?php if(!$is_revendedor) echo 'table-responsive'; else echo ''; ?>">
 				<table class="table table-bordered ">
 
 					<tr style="font-weight:bold;">
@@ -549,10 +596,14 @@ $fe_rev = $qr_rev->fetch_assoc();
 					<?php
 
 						$revend = array();
+						$compra_ja_esta_na_lista = array();
 
 						do {
 
-
+							if($travarBilhetesDezenaBolao && $compra_ja_esta_na_lista[$fe_rev['comp_cod']])
+								continue;
+							else
+								$compra_ja_esta_na_lista[$fe_rev['comp_cod']] = true;
 
 							if ($fe_rev['bil_compra'] != $compra_atual) {
 
@@ -575,11 +626,19 @@ $fe_rev = $qr_rev->fetch_assoc();
 
 						<tr>
 
-							<td><?= str_pad($fe_rev['bil_numero'], strlen($max_bilhetes) - 1, "0", STR_PAD_LEFT); ?></td>
+							<td><?php if($travarBilhetesDezenaBolao) echo $fe_rev['bil_grupo'] . "-" . str_pad($fe_rev['bil_bilhete_original'], strlen($max_bilhetes) - 1, "0", STR_PAD_LEFT); else echo str_pad($fe_rev['bil_numero'], strlen($max_bilhetes) - 1, "0", STR_PAD_LEFT); ?></td>
 
 							<td><?= $fe_rev['comp_cod']; ?></td>
 
-							<td><?= $fe_rev['Usuario']; ?></td>
+							<td>
+								<?= $fe_rev['Usuario']; ?>
+								<?php
+								if($modoBancaOnline) {
+									echo "<p><br>Valor Apostado: R$ " . number_format($fe_rev['bil_aposta'], 2, ',', '.') . "<br>";
+									echo "Premiação Possível: R$ " . number_format($fe_rev['bil_aposta'] * $multiplicador, 2, ',', '.') . "</p>";
+								}
+								?>
+							</td>
 
 							<?php $data = date('d/m/Y H:i', strtotime($fe_rev['comp_data'])); ?>
 							<td><?= $fe_rev['Cliente']; ?><br><?= $data; ?></td>
@@ -608,15 +667,23 @@ $fe_rev = $qr_rev->fetch_assoc();
 								<?php
 										switch ($fe_rev['comp_situacao']) {
 											case "":
-												echo '<td class="label-situacao-acao"><div class="box-vendido vendido">&nbsp;</div><span onclick="marcarBilhetePago(' . $fe_rev['comp_cod'] . ', \'' . $fe_rev['ClienteCelular'] . '\', \'' . $fe_rev['Usuario'] . '\', \'' . $fe_rev['Cliente'] . '\', \'' . $rifa_titulo . '\', \'' . implode('/', array_reverse(explode('-', $rifa_dtsorteio))) . '\')" style="color:#F41B24; cursor:pointer" >Marcar Pago</span>';
-												echo '<br><button style="margin-top:15px" class="btn btn-sm btn-default btn-lembrete" onclick="enviarLembreteWhatsapp(\'' . $fe_rev['Cliente'] . '\',\'' . $fe_rev['ClienteCelular'] . '\',\'' . $fe_rev['comp_cod'] . '\');">Lembrete</button>';
+												$grupo = "";
+												if($travarBilhetesDezenaBolao) 
+													$grupo = ", '" .  $fe_rev['bil_grupo'] . ":" . str_pad($fe_rev['bil_bilhete_original'], strlen($max_bilhetes) - 1, "0", STR_PAD_LEFT) . "'";
+												echo '<td class="label-situacao-acao"><div class="box-vendido vendido">&nbsp;</div><span onclick="marcarBilhetePago(' . $fe_rev['comp_cod'] . ', \'' . $fe_rev['ClienteCelular'] . '\', \'' . $fe_rev['Usuario'] . '\', \'' . $fe_rev['Cliente'] . '\', \'' . $rifa_titulo . '\', \'' . implode('/', array_reverse(explode('-', $rifa_dtsorteio))) . '\' '. $grupo . ')" style="color:#F41B24; cursor:pointer" >Marcar Pago</span>';
+												echo '<br><button style="margin-top:15px" class="btn btn-sm btn-default btn-lembrete" onclick="enviarLembreteWhatsapp(\'' . $fe_rev['Cliente'] . '\',\'' . $fe_rev['ClienteCelular'] . '\',\'' . $fe_rev['comp_cod'] . '\' ' . $grupo . ');">Lembrete</button>';
 												echo '<br><button class="btn btn-sm btn-danger btn-lembrete" onclick="cancelarBilhete(' . $fe_rev['comp_cod'] . ')">Cancelar</button>';
 												echo '</td>';
 												//echo ($fe_rev['comp_status_revenda'] == '1') ? " - (PAGO NA HORA)" : " - (A RECEBER)";
 												break;
 											case 3:
 											case 4:
-												echo '<td style="color:grey; cursor:pointer" class="label-situacao-acao" onclick="gerarComprovante(' . $fe_rev['comp_cod'] . ')">Comprovante</td>';
+												$grupo = "";
+												if($fe_rev['bil_bilhete_original'] && $fe_rev['bil_grupo'])
+													$grupo = ", '" .  $fe_rev['bil_grupo'] . ":" . str_pad($fe_rev['bil_bilhete_original'], strlen($max_bilhetes) - 1, "0", STR_PAD_LEFT) . "'";
+												
+												echo '<td style="color:grey; cursor:pointer" class="label-situacao-acao" onclick="comprovanteViaWhatsap(' . $fe_rev['comp_cod'] . ', \'' . $fe_rev['ClienteCelular'] . '\', \'' . $fe_rev['Usuario'] . '\', \'' . $fe_rev['Cliente'] . '\', \'' . $rifa_titulo . '\', \'' . implode('/', array_reverse(explode('-', $rifa_dtsorteio))) . '\' '. $grupo . ');">Comprovante</td>';
+												
 												break;
 											default:
 												echo '<td></td>';
@@ -689,7 +756,7 @@ $fe_rev = $qr_rev->fetch_assoc();
 	</div>
 
 
-
+	<?php if(!$is_revendedor) { ?>
 	<p>Pagar aos Revendedores</p>
 
 	<div class="table-responsive">
@@ -777,7 +844,7 @@ $fe_rev = $qr_rev->fetch_assoc();
 
 		</table>
 	</div>
-
+	<?php } ?>
 
 
 <?php  } else { ?>
@@ -785,7 +852,7 @@ $fe_rev = $qr_rev->fetch_assoc();
 	<p style="padding:10px;" class="bg-warning">Nenhum bilhete foi vendido por revenda.</p>
 
 <?php } ?>
-
+<?php if(!$is_revendedor) { ?>
 <div class="form-group">
 
 	<button onclick="javascript: location.href='index.php?p=revendedor&rifa=<?php echo $codigo; ?>';" class="btn">Revendedores</button>
@@ -796,7 +863,7 @@ $fe_rev = $qr_rev->fetch_assoc();
 
 	<?php } ?>
 
-	<button onclick="javascript: location.href='index.php?p=editar&codigo=<?php echo $codigo; ?>';" class="btn">editar</button>
+	<button onclick="javascript: location.href='index.php?p=cadastrar&codigo=<?php echo $codigo; ?>';" class="btn">editar</button>
 
 	<?php if ($bil_vendidos == 0) { ?>
 
@@ -809,7 +876,7 @@ $fe_rev = $qr_rev->fetch_assoc();
 	<?php } ?>
 
 </div>
-
+<?php } ?>
 <div class="clearfix"></div>
 
 </div>
@@ -964,6 +1031,9 @@ $fe_rev = $qr_rev->fetch_assoc();
 </div>
 
 <script>
+
+	var modoBancaOnline = <?php echo $modoBancaOnline ? 'true': 'false';  ?>;
+
 	function printElem() {
 
 
@@ -1227,13 +1297,13 @@ $fe_rev = $qr_rev->fetch_assoc();
 				} else {
 
 					for (let i = 0; i < data.result[0].length; i++) {
-						data.result[0][i] = ('0' + data.result[0][i]).slice(-<?= strlen($max_bilhetes)-1; ?>);
+						data.result[0][i] = ('000000' + data.result[0][i]).slice(-<?php if($travarBilhetesDezenaBolao) echo 2; else echo strlen($max_bilhetes)-1; ?>);
 					}
 
 					var bils = (data.result).toString();
 					bils = bils.replace(/,/g, '-');
 					conf = bootbox.confirm({
-						message: "Você está <b>CANCELANDO</b> a venda <span style='color:red'>" + codigo_compra + "</span>, com os bilhetes ( <span style='color:blue'>" + bils + " </span>) , deseja continuar?",
+						message: "Você está <>CANCELANDO</> a venda <span style='color:red'>" + codigo_compra + "</span>, com os bilhetes ( <span style='color:blue'>" + bils + " </span>) , deseja continuar?",
 						buttons: {
 							confirm: {
 								label: 'Sim',
@@ -1258,22 +1328,82 @@ $fe_rev = $qr_rev->fetch_assoc();
 		});
 	}
 
-	function enviarWhatsapp(bilhetes, revendedorNome, clienteNome, rifaTitulo, dataSorteio) {
+	function comprovanteViaWhatsap (codigo_compra, tel_cliente, revendedorNome, clienteNome, rifaTitulo, dataSorteio, grupoSorteio) {
 
-		let texto = `*${revendedorNome}:* Olá *${clienteNome}*, seu(s) bilhete(s): [${bilhetes}] da rifa (${rifaTitulo}) Sorteio dia: (${dataSorteio})\n
+		$.ajax({
+			type: 'POST',
+			data: {
+				action: 'recuperar_bilhetes',
+				codigo_compra: codigo_compra,
+			},
+			async: false,
+			dataType: 'json',
+			url: 'controller/RifaDetalhe.php',
+			success: function(data) {
+				if (data.status === 'error') {
+					alert(data.message);
+				} else {
+
+					for (let i = 0; i < data.result[0].length; i++)
+						data.result[0][i] = ('000000' + data.result[0][i]).slice(-<?php if($travarBilhetesDezenaBolao) echo 2; else echo strlen($max_bilhetes)-1; ?>);
+
+					var bils = (data.result).toString();
+					bils = bils.replace(/,/g, '-');
+
+					let aposta = null;
+					let possivel_premiacao = null;
+					let id_compra = null;
+					if(modoBancaOnline && data && data.banca_online && data.banca_online.aposta) {
+						aposta = data.banca_online.aposta;
+						possivel_premiacao = data.banca_online.possivel_premiacao;
+						id_compra = codigo_compra;
+					}
+
+					window.open(`https://api.whatsapp.com/send?phone=+55${tel_cliente}&text=${enviarWhatsapp(bils, revendedorNome, clienteNome, rifaTitulo, dataSorteio, grupoSorteio, id_compra, aposta, possivel_premiacao)}`, "_blank");
+
+				}
+			},
+			error: function(data) {
+				console.log(JSON.stringify(data));
+				//alert(JSON.stringify(data));
+			}
+		});
+
+	}
+
+	function enviarWhatsapp(bilhetes, revendedorNome, clienteNome, rifaTitulo, dataSorteio, grupo, idAposta, valorAposta, possivelPremiacao) {
+		if(grupo)
+			grupo += ' ';
+		else
+			grupo = "";
+		let texto = `*${revendedorNome}:* Olá *${clienteNome}*, seu(s) bilhete(s): ${grupo}[${bilhetes}] da rifa (${rifaTitulo}) Sorteio dia: (${dataSorteio})\n
 Situação: *PAGO*\n
 -------------------------\n
-*NÃO É VÁLIDO COMO COMPROVANTE DE PAGTO*\n
+*NÃO É VÁLIDO COMO COMPROVANTE BANCARIO/DEPOSITO*\n
 -------------------------\n
 *PODERÁ SER SOLICITADO COMPROVANTE DE PAGTO NA ENTREGA DO PRÊMIO*\n
 -------------------------\n
 Boa sorte!`;
+
+		if(modoBancaOnline)
+			texto = `*${revendedorNome}:* Olá *${clienteNome}*, seu(s) bilhete(s): ${grupo}[${bilhetes}] da rifa (${rifaTitulo}) Sorteio dia: (${dataSorteio})\n
+Situação: *PAGO*\n
+Id Aposta: ${idAposta}
+Valor Aposta: ${valorAposta}
+Possível Premiação: ${possivelPremiacao}
+-------------------------\n
+*NÃO É VÁLIDO COMO COMPROVANTE BANCARIO/DEPOSITO*\n
+-------------------------\n
+*PODERÁ SER SOLICITADO COMPROVANTE DE PAGTO NA ENTREGA DO PRÊMIO*\n
+-------------------------\n
+Boa sorte!`;
+
         return window.encodeURIComponent(texto);
 
     }
 
 
-	function confirmaMarcarBilhete(codigo_compra, tel_cliente, revendedorNome, clienteNome, rifaTitulo, dataSorteio) {
+	function confirmaMarcarBilhete(codigo_compra, tel_cliente, revendedorNome, clienteNome, rifaTitulo, dataSorteio, grupo) {
 		$.ajax({
 			type: 'POST',
 			data: {
@@ -1310,12 +1440,21 @@ Boa sorte!`;
 								} else {
 
 									for (let i = 0; i < data.result[0].length; i++) {
-										data.result[0][i] = ('0' + data.result[0][i]).slice(-<?= strlen($max_bilhetes)-1; ?>);
+										data.result[0][i] = ('00000' + data.result[0][i]).slice(-<?php if($travarBilhetesDezenaBolao) echo 2; else echo strlen($max_bilhetes)-1; ?>);
 									}
 									var bils = (data.result).toString();
 									bils = bils.replace(/,/g, '-');
 
-									window.open(`https://api.whatsapp.com/send?phone=+55${tel_cliente}&text=${enviarWhatsapp(bils, revendedorNome, clienteNome, rifaTitulo, dataSorteio)}`, "_blank");
+									let aposta = null;
+									let possivel_premiacao = null;
+									let id_compra = null;
+									if(modoBancaOnline && data && data.banca_online && data.banca_online.aposta) {
+										aposta = data.banca_online.aposta;
+										possivel_premiacao = data.banca_online.possivel_premiacao;
+										id_compra = codigo_compra;
+									}
+
+									window.open(`https://api.whatsapp.com/send?phone=+55${tel_cliente}&text=${enviarWhatsapp(bils, revendedorNome, clienteNome, rifaTitulo, dataSorteio, grupo, id_compra, aposta, possivel_premiacao)}`, "_blank");
 									location.reload();
 
 								}
@@ -1338,7 +1477,11 @@ Boa sorte!`;
 		});
 	}
 
-	function enviarLembreteWhatsapp(nome_cliente, celular_cliente, codigo_compra) {
+	function enviarLembreteWhatsapp(nome_cliente, celular_cliente, codigo_compra, grupo) {
+		if(grupo)
+			grupo = `*${grupo}* `;
+		else
+			grupo = '';
 		$.ajax({
 			type: 'POST',
 			data: {
@@ -1352,11 +1495,11 @@ Boa sorte!`;
 					alert(data.message);
 				} else {
 					for (let i = 0; i < data.result[0].length; i++) {
-						data.result[0][i] = ('0' + data.result[0][i]).slice(-<?= strlen($max_bilhetes)-1; ?>);
+						data.result[0][i] = ('000000' + data.result[0][i]).slice(-<?php if($travarBilhetesDezenaBolao) echo 2; else echo strlen($max_bilhetes)-1; ?>);
 					}
 					var bils = (data.result).toString();
 					bils = bils.replace(/,/g, '-');
-					var mensagem = 'Olá, ' + nome_cliente + '. Sua aposta: ' + codigo_compra + ' BILHETE(S): [' + bils + '] está como RESERVADA. Efetue o PAGAMENTO e GARANTA sua Sorte!';
+					var mensagem = 'Olá, ' + nome_cliente + '. Sua aposta: ' + codigo_compra + ' BILHETE(S): ' + grupo + '[' + bils + '] está como RESERVADA. Efetue o PAGAMENTO e GARANTA sua Sorte!';
 					var whatsapp = 'https://api.whatsapp.com/send?phone=55' + celular_cliente + '&text=' + mensagem + '';
 					window.open(whatsapp, '_blank');
 				}
@@ -1368,7 +1511,7 @@ Boa sorte!`;
 	}
 
 
-	function marcarBilhetePago(codigo_compra, tel_cliente, revendedorNome, clienteNome, rifaTitulo, dataSorteio) {
+	function marcarBilhetePago(codigo_compra, tel_cliente, revendedorNome, clienteNome, rifaTitulo, dataSorteio, grupoSorteio) {
 		$.ajax({
 			type: 'POST',
 			data: {
@@ -1384,14 +1527,18 @@ Boa sorte!`;
 				} else {
 
 					for (let i = 0; i < data.result[0].length; i++) {
-						data.result[0][i] = ('000000' + data.result[0][i]).slice(-<?= strlen($max_bilhetes)-1; ?>);
+						data.result[0][i] = ('000000' + data.result[0][i]).slice(-<?php if($travarBilhetesDezenaBolao) echo 2; else echo strlen($max_bilhetes)-1; ?>);
 					}
-
+					console.log(data.result);
 
 					var bils = (data.result).toString();
 					bils = bils.replace(/,/g, '-');
+					let a_mensagem = "Você está marcando os seguintes bilhetes ( <span style='color:blue'>" + bils + " </span>) da venda <span style='color:red'>" + codigo_compra + "</span> como <b>pagos</b>, deseja continuar?";
+					if(grupoSorteio)
+						a_mensagem = "Você está marcando os seguintes bilhetes ( <span style='color:blue'>" + bils + " </span>) " + grupoSorteio + " da venda <span style='color:red'>" + codigo_compra + "</span> como <b>pagos</b>, deseja continuar?";
+
 					conf = bootbox.confirm({
-						message: "Você está marcando os seguintes bilhetes ( <span style='color:blue'>" + bils + " </span>) da venda <span style='color:red'>" + codigo_compra + "</span> como <b>pagos</b>, deseja continuar?",
+						message: a_mensagem,
 						buttons: {
 							confirm: {
 								label: 'Sim',
@@ -1404,7 +1551,7 @@ Boa sorte!`;
 						},
 						callback: function(result) {
 							if (result === true) {
-								confirmaMarcarBilhete(codigo_compra, tel_cliente, revendedorNome, clienteNome, rifaTitulo, dataSorteio);
+								confirmaMarcarBilhete(codigo_compra, tel_cliente, revendedorNome, clienteNome, rifaTitulo, dataSorteio, grupoSorteio);
 							}
 						}
 					});

@@ -228,6 +228,10 @@ if(isset($_POST['processar'])){
 	if($_POST['ativar_sms'])
 		$sms = 1;
 
+	$inverter = 0;
+	if($_POST['inverter'])
+		$inverter = 1;
+
 	if($_POST['embaralhamento'])
 		$embaralhamento = 1;
 	else
@@ -250,7 +254,7 @@ if(isset($_POST['processar'])){
 
 	$numeros_por_bilhete = intval($_POST['numeros_por_bilhete']);
 	$mysqli->query("delete from opcao_reserva where rifa = '$rifa'");
-	$mysqli->query("insert into opcao_reserva (rifa, agrupar, embaralhar, numeros_por_bilhete, bolaodezena, starting_group, ativar_sms) values('$rifa', '$agrupamento', '$embaralhamento', '$numeros_por_bilhete', '$bolaodezena', '$grupo_inicial', '$sms')");
+	$mysqli->query("insert into opcao_reserva (rifa, agrupar, embaralhar, numeros_por_bilhete, bolaodezena, starting_group, ativar_sms, inverter) values('$rifa', '$agrupamento', '$embaralhamento', '$numeros_por_bilhete', '$bolaodezena', '$grupo_inicial', '$sms', '$inverter')");
 	$j = 1;
 	$sql_code = array();
 	if(!is_array($_POST['revendedor'])){
@@ -596,7 +600,7 @@ $rifa    = intval($_GET['rifa']);
 $dado    = db_select($mysqli, "select u.usu_nome, u.usu_cod from tbl_usuario u, tbl_revendedor r where u.usu_cod = r.usu_cod and r.rifa_cod = '$rifa'");
 $reserva = db_select($mysqli, "select * from reserva where rifa = '$rifa'");
 $rifas   = db_select($mysqli, "select ri.rifa_cod, ri.rifa_png, ri.rifa_titulo from reserva r, tbl_rifas ri where r.rifa = ri.rifa_cod and ri.rifa_cod != '$rifa'");
-$res     = db_select($mysqli, "select embaralhar, agrupar, numeros_por_bilhete, bolaodezena, ativar_sms, starting_group from opcao_reserva where rifa = '$rifa' limit 1", 1);
+$res     = db_select($mysqli, "select embaralhar, agrupar, numeros_por_bilhete, bolaodezena, ativar_sms, inverter, starting_group from opcao_reserva where rifa = '$rifa' limit 1", 1);
 $dados_da_rifa = db_select($mysqli, "select ri.rifa_png, ri.rifa_dono, ri.rifa_cor from tbl_rifas ri where ri.rifa_cod = '$rifa'", 1);
 ?>
 <div class="col-lg-12">
@@ -752,6 +756,7 @@ $dados_da_rifa = db_select($mysqli, "select ri.rifa_png, ri.rifa_dono, ri.rifa_c
 			<p><label><input name="embaralhamento" <?php if($res['embaralhar']) echo 'checked="checked"'; ?> value="1" type="checkbox"> Com embaralhamento</label></p>
 			<p><label><input name="agrupamento" <?php if($res['agrupar']) echo 'checked="checked"'; ?> value="1" type="checkbox"> Com agrupamento</label></p>
 			<p><label><input <?php if($res['bolaodezena'] >= 100) echo 'checked'; ?> onchange="dezenaCheck(this.checked);" name="bolaodezena" <?php if($res['bolaodezena'] >= 100) echo 'checked="checked"'; ?> value="1" type="checkbox"> BOLÃO DE DEZENA - Surpresinhas</label></p>
+			<p><label><input <?php if($res['inverter']) echo 'checked'; ?>  name="inverter" value="1" type="checkbox"> Inverte / exibir MILHAR FEDERAL ao invés das DEZENAS</label></p>
 			<div class="form-inline form-group">
 				<select name="surpresinha" id="surpresinha" <?php if(!$res['bolaodezena']) echo 'disabled'; ?>  class="form-control">
 					<option <?php if(intval($res['bolaodezena']) == 100) echo 'selected'; ?> value="100">100</option>

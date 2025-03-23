@@ -158,6 +158,9 @@ if ($queryBil->num_rows > 0)
 	} while ($bil = $queryBil->fetch_assoc());
 ?>
 <script>
+
+	var modoBancaOnline = <?php echo $rifa['banca_online'] ? 'true':'false'; ?>;
+
 	function padLeft(nr, n, str) {
 		return Array(n - String(nr).length + 1).join(str || '0') + nr;
 	}
@@ -426,6 +429,38 @@ if ($queryBil->num_rows > 0)
 
 
 	}
+	function registrar_aposta(bilhete, cb) {
+		$.post('page/ver_bilhetes_centena.php', {
+			rifa: <?= $_GET['rifa']; ?>,
+			action: 'definir_aposta_maxima',
+			valor: $('#valor_banca_online').val(),
+			bilhete: bilhete
+		}).done(function(response) {
+			cb();
+		});
+	}
+	function calcular_aposta_maxima(bilhete, cb) {
+
+		$.post('page/ver_bilhetes_centena.php', {
+			rifa: <?= $_GET['rifa']; ?>,
+			action: 'calcular_aposta_maxima',
+			valor: $('#valor_banca_online').val(),
+			bilhete: bilhete
+		}).done(function(response) {
+			try {
+				let resp = JSON.parse(response);
+				if(resp.error)
+					return alert(resp.error);
+				if(!resp.autorizar)
+					return alert(`O valor informado esta acima do valor disponivel para aposta nesse Bilhete. \r\n\r\nA aposta máxima é: R$${resp.aposta_maxima}`);
+				cb(resp);
+			} catch(e) {
+				console.log(e);
+				alert( "Falha ao traduzir resposta do servidor");
+			}
+			
+		});
+	}
 
 	function enviar_formulario() {
 
@@ -433,13 +468,75 @@ if ($queryBil->num_rows > 0)
 		var dezenabolao = <?= ($dezenabolao > 0) ? 'true' : 'false'; ?>;
 		var count = (bilhetes.value.match(/;/g) || []).length;
 		var form = $('#formulario_real');
+		let arrBilhetes = bilhetes.value.split(';');
 
 		if (dezenabolao) {
 			if (count < <?= $dezenabolao; ?>) return alert('Você precisa escolher pelo menos <?= $dezenabolao; ?> bilhetes');
 			if (count > <?= $dezenabolao; ?>) return alert('Você pode escolher no máximo <?= $dezenabolao; ?> bilhetes');
 			return form.submit();
-		} else
-			return form.submit();
+		} else {
+
+			if(modoBancaOnline) {
+				let modal = $('#modal_banca_online');
+
+				$('#botao_calcular', modal).off();
+				$('#botao_confirmar_aposta', modal).off();
+				$('#possivel_premiacao_holder', modal).hide();
+				$('#valor_banca_online', modal).val('');
+				$('#valor_banca_online', modal).removeAttr('disabled');
+
+				
+				$('#botao_confirmar_aposta', modal).off();
+				$('#botao_confirmar_aposta', modal).attr('disabled', 'diabled');
+
+				$('#bilhete_selecionado_bo', modal).html(bilhetes.value);
+
+				$('#modal_banca_online').modal('show');
+
+				let onclick = function() {
+					calcular_aposta_maxima(arrBilhetes, function (resp) {
+
+						$('#botao_calcular').removeClass('btn-primary').addClass('btn-secondary');
+						$('#botao_confirmar_aposta', modal).removeAttr('disabled');
+						$('#valor_banca_online', modal).attr('disabled', 'disabled');
+						$('#possivel_premiacao', modal).html(resp.pode_ganhar);
+						$('#botao_calcular', modal).text("Calcular Novamente");
+
+						$('#botao_calcular', modal).off();
+						$('#botao_calcular', modal).click(function() {
+
+							$('#botao_calcular').removeClass('btn-secondary').addClass('btn-primary');
+							$('#botao_calcular', modal).text("Calcular");
+							$('#valor_banca_online', modal).removeAttr('disabled');
+
+							$('#botao_confirmar_aposta', modal).off();
+							$('#botao_confirmar_aposta', modal).attr('disabled', 'diabled');
+
+							$('#possivel_premiacao').html('');
+
+							$('#botao_calcular', modal).off();
+							$('#botao_calcular', modal).click(onclick);
+
+						});
+
+						$('#possivel_premiacao_holder', modal).show();
+						$('#botao_confirmar_aposta', modal).off();
+						$('#botao_confirmar_aposta', modal).click(function() {
+							registrar_aposta(arrBilhetes, function() {
+								return form.submit();
+								$('#modal_banca_online').modal('hide');
+							});
+						});
+
+					});
+				};
+				$('#botao_calcular', modal).click(onclick);
+
+			} else
+				return form.submit();
+
+		}
+			
 
 	}
 </script>
@@ -563,3 +660,33 @@ if ($queryBil->num_rows > 0)
 <div id="desktop" class="col-lg-12">
 </div>
 <div class="clearfix"></div>
+<!-- Modal -->
+<div id="modal_banca_online" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+		        <h5 class="modal-title text-center" style="color:blue;">BILHETE SELECIONADO: </h5>
+		        <h2 class="text-center" id="bilhete_selecionado_bo" style="margin:0; color:orange;">09</h2>
+		    </div>
+			<div class="modal-body text-center">
+				<p>Digite o VALOR que deseja apostar no quadro abaixo, o sistema irá informar o valor que você poderá ganhar!</p>
+				<p><b>Valor que quero APOSTAR:</b></p>
+				<div class="form-inline">
+					<label for="" style="margin-right:10px;">R$ </label><input id="valor_banca_online" type="text" size="3" class="form-control">
+					<button type="button" id="botao_calcular" class="btn btn-primary" >Calcular</button>
+				</div>
+				<div id="possivel_premiacao_holder">
+				<p><hr></p>
+				<p><b>POSSÍVEL PREMIAÇÃO: <span id="possivel_premiacao"></span></b><br><small>OBS: Para ganhar o valor informado acima seu bilhete tem que sair no 1º Prêmio da Loteria Federal!</small></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<!-- <button type="button" onclick="nova_aposta();" class="btn btn-default" data-dismiss="modal">Nova Aposta</button> -->
+				<button type="button" id="botao_confirmar_aposta" class="btn btn-success" >Confirmar Aposta</button>
+			</div>
+		</div>
+
+	</div>
+</div>

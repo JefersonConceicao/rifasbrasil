@@ -4,7 +4,65 @@
 
 if(!$_SESSION ) @session_start();
 
+function curl_post_contents($url, $params, $timeout = 10) {
 
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+
+    curl_setopt($ch, CURLOPT_POST, false);
+
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36');
+    curl_setopt($c, CURLOPT_HTTPHEADER, array("Content-type: multipart/form-data"));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+
+    if(1) {
+        // CURLOPT_VERBOSE: TRUE to output verbose information. Writes output to STDERR, 
+        // or the file specified using CURLOPT_STDERR.
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+
+        $verbose = fopen('php://temp', 'w+');
+        curl_setopt($ch, CURLOPT_STDERR, $verbose);
+    }
+
+    $result = curl_exec($ch);
+
+    if (!$result) {
+        printf("cUrl error (#%d): %s<br>\n", curl_errno($ch),
+               htmlspecialchars(curl_error($ch)));
+
+        rewind($verbose);
+        $verboseLog = stream_get_contents($verbose);
+
+        echo "Verbose information:\n<pre>", htmlspecialchars($verboseLog), "</pre>\n";
+    }
+
+    $err = curl_error($ch);
+    echo $err;
+    curl_close($ch);
+
+    return $result;
+
+}
+
+
+function enviarWhatsapp ($telefone, $mensagem) {
+      $url = 'https://api.z-api.io/instances/3979CE875006A02B0EA69AA9EABEE58E/token/39DE375A2E19720BC1FCB02A/send-messages';
+      $ch = curl_init($url);
+
+      $data = array(
+          'phone' => '55' . preg_replace("/[^0-9]/", "", $telefone),
+          'message' => $mensagem
+      );
+
+      $res =  curl_post_contents($url, $data, 60);
+      
+}
 
 function onlyNumbers($str){
 
@@ -50,19 +108,39 @@ if($_POST['sms'] && $_POST['tel']){
 
 
 
-if($_POST['email'] && $_POST['html']){
+if(isset($_POST['enviarWhatsapp'])) {
 
+      include("../../class/conexao.php");
 
+      $venc        = implode('-', array_reverse(explode('/', $_POST['vencimento'])));
+      $sql         = "SELECT rifa_cod, rifa_premios, rifa_titulo, rifa_dtsorteio, rifa_maxbilhetes, usu_celular FROM tbl_rifas, tbl_usuario WHERE rifa_dtsorteio = '$venc' and usu_cod = rifa_dono and rifa_deletada is NULL and rifa_cod in (select rifa from lote)";
+      $rifas       = db_select($mysqli, $sql);
 
-      $headers = "Content-Type: text/html; charset=utf-8\r\n";
+      if(count($rifas) == 0)
+            die("Nenhuma Rifa Loteada vence na data informada");
+      
+      $resultado = array();
+      foreach($rifas as $rifa){
+            $tam = (strlen($rifa['rifa_maxbilhetes'])-1)*-1;
+            
+            $arr_bilhetes[$rifa['rifa_cod']] = array();
+            foreach($_POST['numero'] as $n){
+                  $arr_bilhetes[$rifa['rifa_cod']][] = substr($n, $tam);
+            }
 
+            $lista_bilhetes = implode(';', $arr_bilhetes[$rifa['rifa_cod']]);
+            $resultado[$rifa['rifa_cod']] = get_cod_alfanumerico($mysqli, $rifa['rifa_cod'], $lista_bilhetes);
 
+            $enviar_texto = "Cód. {$rifa['rifa_cod']} | Título: {$rifa['rifa_titulo']} | Vencimento: " . implode('/', array_reverse(explode('-',$rifa['rifa_dtsorteio']))) . PHP_EOL;
 
-      mail($_POST['email'], "Apuração Parcial - " . $_POST['data'], $_POST['html'], $headers);
-
+            foreach($resultado[$rifa['rifa_cod']]['bilhete'] as $bil){
+                  $tmp = explode('-', $bil);
+                  $enviar_texto .= PHP_EOL . "$tmp[0]-Nº {$tmp[1]}";
+            }
+            enviarWhatsapp (preg_replace("/[^0-9]/", "", $rifa['usu_celular']), $enviar_texto);
+      }
+      
       die();
-
-
 
 }
 
@@ -220,9 +298,7 @@ label.simple{font-weight: normal;}
 
             <div class="form-group form-inline">
 
-                  <label for="">Enviar para o e-mail à seguir: </label>
-
-                  <input type="email" name="email" id="email" required class="form-control">
+                  <label for="">Enviar resultados por Whatsapp aos donos: </label>
 
                   <button type="button" onclick="enviar_por_email();" class="btn btn-success">Enviar</button>
 
@@ -272,20 +348,14 @@ label.simple{font-weight: normal;}
 
       function enviar_por_email(){
 
-            var conteudo = $('#all').html();
-
-            var email    = $('#email').val();
-
-            var data     = "<?= $_POST['vencimento']; ?>";
-
-            $.post('page/resultado_apuracao.php', {html:conteudo, email:email, data:data}).done(
-
+            let data = <?php echo json_encode($_POST); ?>;
+            data.enviarWhatsapp = true;
+            $.post('page/resultado_apuracao.php', data).done(
                   function(r){
-
                         console.log(r);
-
-                        alert("Apuração enviada por e-mail. Verifica sua caixa de SPAM e Lixeira, se não encontrá-la.");
-
+                        if(r.length == 0)
+                              return alert("Apuração enviada por Whatsapp.");
+                        return alert(r);
                   }).fail(
 
                   function(r){

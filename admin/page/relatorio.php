@@ -2,6 +2,59 @@
 @session_start();
 include('../../class/conexao.php');
 
+if($_GET['tipo'] == 2) {
+
+	header("Content-type: text/plain");
+   	header("Content-Disposition: attachment; filename=relatorio.txt");
+
+	$qrybil = $mysqli->query($_SESSION['relatorio']) or die($mysqli->error);
+    $resbil = $qrybil->fetch_assoc();
+
+    $txt_content = "";
+
+    do {
+
+    	/*
+    	if(!$resbil['qtd_dezenas_etapa_1'] )
+    		continue;
+		*/
+    	$sql_query = "select * from tbl_bilhetes b where b.bil_compra = '{$resbil['compra']}' ORDER BY bil_cod ASC";
+    	if($resbil['qtd_dezenas_etapa_1'])
+        	$sql_query .= " LIMIT " . $resbil['qtd_dezenas_etapa_1'];
+    	$bil_vend = DBExecute($sql_query, $mysqli);
+        $bil_v = $bil_vend->fetch_assoc();
+        $bilhetes = [];
+        $num = 0;
+        $range = explode('-', $resbil['etapa1']);
+
+        
+
+        do{
+
+        	/*
+        	if($num == $resbil['qtd_dezenas_etapa_1'] || $bil_v['bil_numero'] < $range[0] || $bil_v['bil_numero'] > $range[1])
+        		continue;
+			*/
+
+            if($resbil['dezena_bolao'] > 0)
+                $bilhetes[] = str_pad($bil_v['bil_numero'], 2, "0", STR_PAD_LEFT);
+            else
+                $bilhetes[] = str_pad($bil_v['bil_numero'], strlen($resbil['rifa_maxbilhetes'])-1, "0", STR_PAD_LEFT);
+
+            $num++;
+            
+        } while( $bil_v = $bil_vend->fetch_assoc());                    
+
+        if(count($bilhetes) > 0)
+        	$txt_content .= implode(',', $bilhetes) .  PHP_EOL;
+        //$txt_content .= implode(',', $bilhetes) .  "<BR>";
+
+    } while($resbil = $qrybil->fetch_assoc());
+
+	die($txt_content);
+
+}
+
 $dado = DBSelect("Select usu_psemail, usu_mensalista, usu_pstoken from tbl_usuario WHERE usu_cod = '{$_SESSION['usuario']}'", $mysqli);
 $isMENSALISTA = intval($dado['usu_mensalista']);
 
@@ -29,6 +82,7 @@ $isMENSALISTA = intval($dado['usu_mensalista']);
 				<td width="40%">Cliente</td>
 				
 				<td align="right">Apostas</td>
+				<td>Grupo</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -132,6 +186,12 @@ $isMENSALISTA = intval($dado['usu_mensalista']);
 							echo $bilhetes;
 						else 
 							echo "Indisponível até a finalização.";
+						?>
+					</td>
+					<td>
+						<?php 
+						if($resbil['comp_grupo'] != null)
+							echo getNameFromNumber($resbil['comp_grupo']); 
 						?>
 					</td>
 				</tr>
@@ -244,7 +304,8 @@ $isMENSALISTA = intval($dado['usu_mensalista']);
 			    3: {columnWidth: 60},
 			    4: {columnWidth: 100},
 			    5: {columnWidth: 150},
-			    6: {columnWidth: 200}
+			    6: {columnWidth: 200},
+			    7: {columnWidth: 50}
 			    // etc
 			},
 	      	styles: {

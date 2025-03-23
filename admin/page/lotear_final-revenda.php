@@ -150,6 +150,7 @@ $retorno['msg'] = "Dados salvos com sucesso!";
 
 if($res['new'] == "true"){
 	$mysqli->query("delete from grupo_revendedor where revenda in(select codigo from revenda where rifa = '$rifa')");
+	$mysqli->query("delete from cache_bilhetes_do_grupo where rifa = '$rifa'");
 	$mysqli->query("delete from revenda where rifa = '$rifa'");
 	//echo "Todos os registros foram deletados\n";
 }

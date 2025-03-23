@@ -147,7 +147,6 @@ if (isset($_POST['cadastrar'])) {
         <div class="form-group col-lg-12 text-left">
 
 
-
         </div>
 
         <div class="form-group col-lg-12">

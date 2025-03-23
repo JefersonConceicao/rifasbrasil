@@ -18,7 +18,7 @@ class Loteamento{
 			$pasta,
 			$slots,
 			$png,
-			$out,
+			$out = array(),
 			$qrcodes,
 			$qr_code,
 			$maxpages = 15000,
@@ -26,6 +26,7 @@ class Loteamento{
 			$agrupamento = true,
 			$exibirCodigo = false,
 			$surpresinha = 0,
+			$dezena_bolao = false,
 			$startingGroup = 'A';
 
 	function __construct($r, $l, $e = true, $a = true){
@@ -236,8 +237,69 @@ class Loteamento{
 			$conteudo = ob_get_contents();
 			ob_end_clean();
 
-			if($layout == 3)
-				$conteudo .= '<style>.bloco-branco small {
+			if($layout == 3) {
+
+				if($this->dezena_bolao) {
+					$conteudo .= '<style>
+
+						.serie_name {
+							background-color: black;
+							font-size: 9pt;
+							color:white;
+						}
+						.bloco-branco .grupo {
+						    position: relative;
+						    left: 30px;
+						}
+						.bloco-branco small {
+							position: relative;
+						    top: -40px;
+						    left: 20px;
+						}
+						.qr2 {
+							position: relative;
+		    				top: 28px;
+						}
+
+						.bloco-branco-dir small {
+						    position: relative;
+						    top: -20px;
+						    color: black;
+						    font-weight: bold;
+						    font-size: 5pt;
+						    left: -150px;
+						}
+						.bloco-branco-dir .serie_name {
+							font-size: 17pt;
+							background-color: black;
+							color:white;
+						}
+						.bloco-branco-dir .grupo {
+							line-height: 0.8;
+							font-size: 10pt!important;
+						    position: relative;
+						    top: -5px;;
+						}
+						.bloco-brando-dir .qr-code {
+						    margin-left: 1.8cm;
+						    top: 0;
+						    left: 0;
+						    margin-top: 0;
+						    background-color: transparent;
+						    width: 1.2cm;
+						    height: 1.2cm;
+						    position: relative;
+						    left: 0px;
+						}
+						.bloco-branco-dir .serie_name {
+							font-size: 14pt;
+						}
+						
+						.bloco-branco-dir { font-weight:bold;}
+						
+					</style>';
+				} else 
+					$conteudo .= '<style>.bloco-branco small {
 					
 				    color: black;
 				    position: relative;
@@ -268,6 +330,7 @@ class Loteamento{
 				} .bloco-branco-dir { font-weight:bold;}</style>
 				';
 
+			}
 		}elseif($layout == 5){
 
 			ob_start();
@@ -473,6 +536,8 @@ class Loteamento{
 	    else {
 	    	//echo 'xvfb-run wkhtmltopdf --javascript-delay 15000 -L 0mm -R 0mm -T 0mm -B 0mm --page-width 320mm --page-height 415mm http://rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.html /var/www/nevoahost/c/rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.pdf';
 	    	exec('xvfb-run wkhtmltopdf --javascript-delay 15000 -L 0mm -R 0mm -T 0mm -B 0mm --page-width 320mm --page-height 415mm http://rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.html /var/www/nevoahost/c/rifasbrasil.com.br/servidor/admin/resultado/'.$nome.'.pdf', $out2);
+	    	//var_dump($out2);
+	    	//die();
 	    }
 
 	    foreach($out2 as $a){
@@ -865,6 +930,10 @@ class Loteamento{
 
 	}
 
+	function setDezenaBolao ($isDezenaBolao) {
+		$this->dezena_bolao = $isDezenaBolao;
+	}
+
 	function exibirCodigo(){
 		$this->exibirCodigo = true;
 	}
@@ -963,6 +1032,7 @@ class Loteamento{
 		$k = 0;
 		$j = 0;
 		$bilhetes_finais = array();
+		$this->qr_code = array();
 		$num = 0;
 		
 		$bilhetesReservados = $this->getArrayDeBilhetesReservados($rifa, true, true);
@@ -977,12 +1047,12 @@ class Loteamento{
 
 		$this->qrcodes = array();
 		foreach($bil as $val){
+			//var_dump(gerarDezenas($rifa, $val, false), $rifa, $val);
 			$this->qrcodes[] = $val . '*' . implode(',', gerarDezenas($rifa, $val, false));
 		}
 
 		// gerar os QR codes
 	    $k = 0;
-	    $this->out = array();
 	    while($k < count($this->qrcodes)){
 	        $bilhetes = array();
 
@@ -1003,12 +1073,12 @@ class Loteamento{
 	        		foreach($this->rifas as $r) {
 	        			//echo "nodejs /var/www/nevoahost/c/rifasbrasil.com.br/servidor/new_server/qr.js " . intval($r) . " " . (implode('-', $bilhetes));
 			        	exec("nodejs /var/www/nevoahost/c/rifasbrasil.com.br/servidor/new_server/qr.js " . intval($r) . " " . (implode('-', $bilhetes)), $temp);
-			        	$this->out = array_merge($this->out, $temp);
+			        	//$this->out = array_merge($this->out, $temp);
 	        		}
 	        	} else {
 	        		//echo "nodejs /var/www/nevoahost/c/rifasbrasil.com.br/servidor/new_server/qr.js " . intval($this->rifas) . " " . (implode('-', $bilhetes));
 		        	exec("nodejs /var/www/nevoahost/c/rifasbrasil.com.br/servidor/new_server/qr.js " . intval($this->rifas) . " " . (implode('-', $bilhetes)), $temp);
-		        	$this->out = array_merge($this->out, $temp);
+		        	//$this->out = array_merge($this->out, $temp);
 	        	}
 	        	
 	        	
@@ -1017,9 +1087,7 @@ class Loteamento{
 
 	    }
 
-
-
-	    exec('chmod -R 777 /var/www/nevoahost/c/rifasbrasil.com.br/servidor/new_server/qrbf/*');
+	    exec('chmod -R 777 /var/www/nevoahost/c/rifasbrasil.com.br/servidor/new_server/qrbf');
 
 	    /*$bilhetesReservados = $this->getArrayDeBilhetesReservados($rifa, true, false);
 		if(is_array($bilhetesReservados)){
@@ -1065,11 +1133,12 @@ class Loteamento{
 
 		$numero_de_bilhetes_na_rifa = $this->getNumBilhetes($$rifa);
 		$current_group = '';
+
 		foreach($bil as $val){
 
 			//$this->qrcodes[] = $val . '*' . implode(',', gerarDezenas($rifa, $val, false));
-			$this->qr_code[] = $this->gerarQR($rifa, $val);
-
+			
+			
 			if( isset($grupos_personalizados[$val]) && $current_group != $titulo_grupos[$k]){
 				$titulo_grupos[$k] = $grupos_personalizados[$val] . ' ' . $titulo_grupos[$k];
 				$current_group = $titulo_grupos[$k];
@@ -1087,6 +1156,7 @@ class Loteamento{
 						.'</span>';
 
 					$bilhetes_finais[$num]['bil'] = $val;
+					$this->qr_code[$num] = $this->gerarQR($rifa, $val);
 
 					$num++;
 
@@ -1094,21 +1164,33 @@ class Loteamento{
 				}else if($semhtml){
 
 					$bilhetes_finais[] = $titulo_grupos[$k]."-".str_pad($val, strlen($numero_de_bilhetes_na_rifa)-1, '0', STR_PAD_LEFT)."-".substr(md5($rifa.$val), 0, $tamCodigo).$extra;
-				}
-				else{
-					if($this->surpresinha && $this->surpresinha > 0){
+					$this->qr_code[] = $this->gerarQR($rifa, $val);
+
+				} else{
+
+					if($this->surpresinha && $this->surpresinha > 0) {
+
 						$tipo = ($this->layout == 5 || $this->layout == 3)? 1:true;
 						$listaDezenas = gerarDezenas($rifa, $val, $tipo);
-						if($this->layout == 3)
+						if($this->layout == 3) {
 							$tmp = implode(' ', array_slice($listaDezenas, 0, 5)) . '<br>' . implode(' ', array_slice($listaDezenas, -5));
-						else
+							$bilhetes_finais[$num]['bil'] = "<span class=\"grupo\">" . $tmp . "</span><br><small>" . $titulo_grupos[$k] . " - <span class=\"serie_name\">" . str_pad($val, strlen($this->surpresinha)-1, '0', STR_PAD_LEFT) . "</span></small>";
+							$bilhetes_finais[$num]['qr'] = $this->gerarQR($rifa, $val);
+							$num++;
+						}else {
 							$tmp = $listaDezenas;
+							$bilhetes_finais[] = "<span class=\"grupo\">" . $tmp . "</span><br><small>" . $titulo_grupos[$k] . " - <span class=\"serie_name\">" . str_pad($val, strlen($this->surpresinha)-1, '0', STR_PAD_LEFT) . "</span></small>";
+							$this->qr_code[] = $this->gerarQR($rifa, $val);
+						}
 
-						$bilhetes_finais[] = "<span class=\"grupo\">".$tmp."</span><br><small>"
-							.$titulo_grupos[$k]." - <span class=\"serie_name\">".str_pad($val, strlen($this->surpresinha)-1, '0', STR_PAD_LEFT)."</span></small>";
+						
+
+
 					}else {
 						$bilhetes_finais[] = "<span class=\"grupo\">".$titulo_grupos[$k]."</span>-<span class=\"milhar\">Nº ".str_pad($val, strlen($numero_de_bilhetes_na_rifa)-1, '0', STR_PAD_LEFT)."</span><br><small>ID. $rifa | ".substr(md5($rifa.$val), 0, $tamCodigo).$extra."</small>";
+						$this->qr_code[] = $this->gerarQR($rifa, $val);
 					}
+
 				}
 			}else{
 
@@ -1121,12 +1203,13 @@ class Loteamento{
 						.'</span>';
 
 					$bilhetes_finais[$num]['bil'] = $val;
-
+					$this->qr_code[$num] = $this->gerarQR($rifa, $val);
 					$num++;
 
 					//$titulo_grupos[$k]."-".str_pad($val, strlen($bilhetes)-1, '0', STR_PAD_LEFT)."-".substr(md5($rifa.$val), 0, 4);
 				}else if($semhtml){
 					$bilhetes_finais[] = "-".str_pad($val, strlen($numero_de_bilhetes_na_rifa)-1, '0', STR_PAD_LEFT)."-".substr(md5($rifa.$val), 0, $tamCodigo).$extra;
+					$this->qr_code[] = $this->gerarQR($rifa, $val);
 				}
 				else{
 					if($this->surpresinha > 0){
@@ -1134,8 +1217,11 @@ class Loteamento{
 						$listaDezenas = gerarDezenas($rifa, $val, $tipo);
 						$bilhetes_finais[] = "<span class=\"grupo\">".implode(' ', $listaDezenas)."</span><br><small>"
 						.str_pad($val, strlen($this->surpresinha)-1, '0', STR_PAD_LEFT)."</small>";
-					}else
+						$this->qr_code[] = $this->gerarQR($rifa, $val);
+					}else {
 						$bilhetes_finais[] = "<span class=\"milhar\">Nº ".str_pad($val, strlen($numero_de_bilhetes_na_rifa)-1, '0', STR_PAD_LEFT)."</span><br><small>ID. $rifa | ".substr(md5($rifa.$val), 0, $tamCodigo).$extra."</small>";
+						$this->qr_code[] = $this->gerarQR($rifa, $val);
+					}
 				}
 			}
 
@@ -1150,9 +1236,6 @@ class Loteamento{
 			$i++;
 
 		} 
-
-		
-
 
 		return $bilhetes_finais;
 
@@ -1687,7 +1770,7 @@ class Loteamento{
 			}
 
 		}else{
-			
+
 			for($b = 0; $b < $fim; $b++){
 
 				if($trocar_tabela == 0) $final .= "<table class=\"principal\">";
@@ -1698,6 +1781,13 @@ class Loteamento{
 				else
 					$codigo_rifa_tmp = $this->rifas;
 
+				if($this->layout == 3) {
+					$qrcode = $bilhetes_finais[$b]['qr'];
+					$bilhetes = $bilhetes_finais[$b]['bil'];
+				} else {
+					$bilhetes = $bilhetes_finais[$b];
+					$qrcode = $this->qr_code[$b];
+				}
 
 				$final .=  '
 				<td valign="top" class="rifa-altura rifa-largura rifa" >
@@ -1706,13 +1796,13 @@ class Loteamento{
 						<table class="inside">
 							<tr>
 								<td class="col1">
-									<div class="bloco-branco"><img class="qr qr2" src="'.$this->qr_code[$b].'">'.$bilhetes_finais[$b].'</div>
+									<div class="bloco-branco"><img class="qr qr2" src="'.$qrcode.'">'.$bilhetes.'</div>
 								</td>
 								<td class="col2">
-									<div class="qr-code"><img class="qr qr3" src="'.$this->qr_code[$b].'"></div>
+									<div class="qr-code"><img class="qr qr3" src="'.$qrcode.'"></div>
 								</td>
 								<td class="col3">
-									<div class="bloco-branco-dir">'.$bilhetes_finais[$b].'</div>
+									<div class="bloco-branco-dir">'.$bilhetes.'</div>
 								</td>
 							</tr>
 						</table>
@@ -1731,6 +1821,8 @@ class Loteamento{
 				$trocar_tabela++;
 				$trocar_linha++;
 			}
+
+
 
 		}
 

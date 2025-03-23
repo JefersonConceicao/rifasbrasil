@@ -1,5 +1,5 @@
 php_value memory_limit 2048M
-php_value max_input_vars 10000
+php_value max_input_vars 40000
 php_flag display_startup_errors on
 php_flag display_errors on
 php_flag html_errors on

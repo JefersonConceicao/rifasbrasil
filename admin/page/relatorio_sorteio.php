@@ -206,6 +206,7 @@ if($sorteio && count($sorteios_arr) > 0){
 					<td>Bilhetes</td>
 					<td>Data da Aposta</td>
 					<td>Pontuação</td>
+					<td>Grupo</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -246,6 +247,8 @@ if($sorteio && count($sorteios_arr) > 0){
 						echo "$pontos pontos";
 						?>
 					</td>
+					<td><?php if($compra['comp_grupo'] != null) 
+					echo getNameFromNumber($compra['comp_grupo']); ?></td>
 				</tr>
 				<?php } ?>
 			</tbody>

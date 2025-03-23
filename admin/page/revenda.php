@@ -76,7 +76,11 @@ $rev_num = $rev_query->num_rows;
 							<td>R$ <?php echo number_format($ven2['c'] * $rev['rifa_valorbilhete'] * ($comissao / 100), 2, ',', '.'); ?></td>
 
 							<td class="text-right">
+
+
 								<button name="gerar_link" class="btn btn-warning" onclick="gerarLink('<?= $rifa_codigo; ?>', '<?= $revendedor_responsavel ?>')">Gerar Link</button>
+
+								<button name="gerar_link" class="btn btn-primary" onclick="location.href='index.php?p=rif_detalhe&codigo=<?php echo $rifa_codigo; ?>';">Extrato</button>
 
 								<?php if ($ven['c'] == 0) { ?>
 									<form method="post" action="">

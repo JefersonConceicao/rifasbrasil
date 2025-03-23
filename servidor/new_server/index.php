@@ -2,67 +2,67 @@
 
 ini_set('max_execution_time', 280); //300 seconds = 5 minutes
 
-      include("../class/conexao.php");
-      //if($_GET['testgrupos'])
-      include("class/Loteamento.class.php");
-      /*else
-        include("class/Loteamento.class.php");*/
+include("../class/conexao.php");
+//if($_GET['testgrupos'])
+include("class/Loteamento.class.php");
+/*else
+  include("class/Loteamento.class.php");*/
 
-      $rifas  = $_GET['rifa'];
-      $a = array();
-      $e = array();
+$rifas = $_GET['rifa'];
+$a = array();
+$e = array();
 
-      if(is_array($rifas)){
-        foreach($rifas as $r){
-          $res = db_select($mysqli, "select embaralhar, agrupar, numeros_por_bilhete, bolaodezena from opcao_reserva where rifa = '$r' limit 1", 1);
+if (is_array($rifas)) {
+  foreach ($rifas as $r) {
+    $res = db_select($mysqli, "select embaralhar, agrupar, numeros_por_bilhete, bolaodezena from opcao_reserva where rifa = '$r' limit 1", 1);
 
-          if($res['bolaodezena'] >= 100 || $res['numeros_por_bilhete'] > 1){
-            echo "redirecting...";
-            $url = str_replace('index.php', 'index2.php', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-            die("<script>location.href='".$url."';</script>");
-          }
+    if ($res['bolaodezena'] >= 100 || $res['numeros_por_bilhete'] > 1) {
+      echo "redirecting...";
+      $url = str_replace('index.php', 'index2.php', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+      die("<script>location.href='" . $url . "';</script>");
+    }
 
-          if($res['embaralhar'])
-            $e[$r] = true;
-          else
-            $e[$r] = false;
+    if ($res['embaralhar'])
+      $e[$r] = true;
+    else
+      $e[$r] = false;
 
-          if($res['agrupar'])
-            $a[$r] = true;
-          else
-            $a[$r] = false;
-        }
-      }else{
+    if ($res['agrupar'])
+      $a[$r] = true;
+    else
+      $a[$r] = false;
+  }
+} else {
 
-        $rifas = intval($rifas);
+  $rifas = intval($rifas);
 
-        $res = db_select($mysqli, "select embaralhar, agrupar, numeros_por_bilhete, bolaodezena from opcao_reserva where rifa = '$rifas' limit 1", 1);
+  $res = db_select($mysqli, "select embaralhar, agrupar, numeros_por_bilhete, bolaodezena from opcao_reserva where rifa = '$rifas' limit 1", 1);
 
-        if($res['bolaodezena'] >= 100){
-          echo 'redirecting...';
-          $url = str_replace('index.php', 'index2.php', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-          die("<script>location.href='".$url."';</script>");
-        }
-
-
-        if($res['numeros_por_bilhete'] > 1){
-           echo 'redirecting...';
-          $url = str_replace('new_server', 'new_server2', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-          die("<script>location.href='".$url."';</script>");
-        }
+  if ($res['bolaodezena'] >= 100) {
+    echo 'redirecting...';
+    $url = str_replace('index.php', 'index2.php', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+    die("<script>location.href='" . $url . "';</script>");
+  }
 
 
+  if ($res['numeros_por_bilhete'] > 1) {
+    echo 'redirecting...';
+    $url = str_replace('new_server', 'new_server2', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
+    die("<script>location.href='" . $url . "';</script>");
+  }
 
-          if($res['embaralhar'])
-            $e[$rifas] = true;
-          else
-            $e[$rifas] = false;
 
-          if($res['agrupar'])
-            $a[$rifas] = true;
-          else
-            $a[$rifas] = false;
-      }
+
+  if ($res['embaralhar'])
+    $e[$rifas] = true;
+  else
+    $e[$rifas] = false;
+
+  if ($res['agrupar'])
+    $a[$rifas] = true;
+  else
+    $a[$rifas] = false;
+}
 
 ?>
 
@@ -103,44 +103,64 @@ ini_set('max_execution_time', 280); //300 seconds = 5 minutes
 
   <section class="holder">
     <div class="col-lg-12">
-    	<div class="col-lg-12">
-    		<h1 class="page-header">Baixar Páginas</h1>
-    		<div class="form-group">
-			<?php
+      <div class="col-lg-12">
+        <h1 class="page-header">Baixar Páginas</h1>
+        <div class="form-group">
+      <?php
+      $layout = intval($_GET['layout']);
 
+      $lot = new Loteamento($rifas, $layout, $e, $a);
 
+      $lot->apagarPDFs();
 
+      if ($layout == 6) {
 
-			$layout = intval($_GET['layout']);
-			
-			$lot    = new Loteamento($rifas, $layout, $e, $a);
-
-			$lot->apagarPDFs();
-
-      if($layout == 6){
         $lot->setPng();
-        for($k = 0; $k < $lot->getQuantidadeDePaginasNecessarias(); $k++){
-          echo "<p><a target='_blank' href='../admin/resultado/".$lot->gerarPDF($lot->gerarHTML($k))."'>Baixar Página ".$k."</a></p>";
+        for ($k = 0; $k < $lot->getQuantidadeDePaginasNecessarias(); $k++) {
+          echo "<p><a target='_blank' href='../admin/resultado/" . $lot->gerarPDF($lot->gerarHTML($k)) . "'>Baixar Página " . $k . "</a></p>";
         }
-      }else{
-        echo "<a target='_blank' href='../admin/resultado/".$lot->gerarPDF($lot->gerarHTML())."'>Baixar Páginas</a>";
+      } else {
+
+        echo "<a target='_blank' href='../admin/resultado/" . $lot->gerarPDF($nomeArquivo = $lot->gerarHTML()) . "'>Baixar Páginas</a>";
       }
-      
-			/*for($k = 0; $k < $lot->getQuantidadeDePaginasNecessarias(); $k++){
-				echo "<p>";
-				echo "<a target='_blank' href='../admin/resultado/".$lot->gerarPDF($lot->gerarHTML($k))."'>Baixar Página ".$k."</a>";
-				echo "</p>";
-			}*/
 
-			//$lot->apagarHTMLs();
+      /*for($k = 0; $k < $lot->getQuantidadeDePaginasNecessarias(); $k++){
+           echo "<p>";
+           echo "<a target='_blank' href='../admin/resultado/".$lot->gerarPDF($lot->gerarHTML($k))."'>Baixar Página ".$k."</a>";
+           echo "</p>";
+         }*/
 
-			?>
-			</div>
-			<div class="form-group">
-				<button onclick="window.history.go(-1);" class="btn btn-primary">Voltar</button>
-			</div>
-    	</div>
+      //$lot->apagarHTMLs();
+      ?>
+      </div>
+      <div class="form-group">
+        <button onclick="window.history.go(-1);" class="btn btn-primary">Voltar</button>
+      </div>
+      </div>
     </div>
+
+  
+    <div class="col-lg-12">
+      PDF Listado(s) na pasta de resultado(s)
+    </div>
+
+    <div class="col-lg-12">
+      <?php 
+          $files = scandir('../admin/resultado');
+          $files = array_diff($files, ['.', '..']);
+
+          $files = array_filter($files, function($file){
+            return strpos($file, 'pdf') !== false;
+          });
+
+
+          foreach($files as $file){
+            echo "<a target='_blank' href='../admin/resultado/" . $file. "'>Baixar PDF</a>";
+          }
+      ?>
+    </div>
+
+   
     <div class="col-lg-12">
       <div class="col-lg-12"><hr>rifasbrasil.com.br - todos os direitos reservados</div>
     </div>

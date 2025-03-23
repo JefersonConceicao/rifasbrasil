@@ -2,6 +2,141 @@
 
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 
+if(!isset($_SESSION))
+	@session_start();
+
+if ($_POST['action'] == 'definir_aposta_maxima') {
+
+	$rifa = intval($_POST['rifa']);
+	if(is_array($_POST['bilhete'])) {
+
+		if(strpos($_POST['valor'], ',') !== false && strpos($_POST['valor'], '.') !== false) {
+			$valor = floatval(str_replace(',', '.', str_replace('.', '', $_POST['valor'])));
+		} else if(strpos($_POST['valor'], ',') !== false) {
+			$valor = floatval(str_replace(',', '.', $_POST['valor']));
+		} else
+			$valor = floatval($_POST['valor']);
+
+		$_SESSION['aposta'] = array();
+		$_SESSION['aposta'][$rifa] = array();
+		foreach($_POST['bilhete'] as $bil) {
+
+			if(!$bil)
+				continue;
+
+			$bilhete = intval($bil);
+			$_SESSION['aposta'][$rifa][$bilhete] = $valor;
+
+		}
+		die();
+	}
+
+	$bilhete = intval($_POST['bilhete']);
+
+	if(strpos($_POST['valor'], ',') !== false && strpos($_POST['valor'], '.') !== false) {
+		$valor = floatval(str_replace(',', '.', str_replace('.', '', $_POST['valor'])));
+	} else if(strpos($_POST['valor'], ',') !== false) {
+		$valor = floatval(str_replace(',', '.', $_POST['valor']));
+	} else
+		$valor = floatval($_POST['valor']);
+
+	$_SESSION['aposta'] = array();
+	$_SESSION['aposta'][$rifa] = array();
+	$_SESSION['aposta'][$rifa][$bilhete] = $valor;
+
+	die();
+
+}
+
+if ($_POST['action'] == 'calcular_aposta_maxima') {
+
+	include("../../class/conexao.php");
+
+	$codigo = intval($_POST['rifa']);
+
+	if(strpos($_POST['valor'], ',') !== false && strpos($_POST['valor'], '.') !== false) {
+		$valor = floatval(str_replace(',', '.', str_replace('.', '', $_POST['valor'])));
+	} else if(strpos($_POST['valor'], ',') !== false) {
+		$valor = floatval(str_replace(',', '.', $_POST['valor']));
+	} else
+		$valor = floatval($_POST['valor']);
+
+	if(is_array($_POST['bilhete'])) {
+
+		foreach($_POST['bilhete'] as $bil) {
+
+			if(!$bil)
+				continue;
+
+			$bilhete = intval($bil);
+			$sql_code = "SELECT SUM(bil_aposta) as soma, rif.valor_aposta, rif.multiplicador FROM tbl_bilhetes bil, tbl_rifas rif WHERE bil.bil_rifa = '$codigo' AND bil.bil_numero = '$bilhete' AND rif.rifa_cod = bil.bil_rifa";
+			$sql_query = $mysqli->query($sql_code) or die($mysqli->error);
+			$resultado = $sql_query->fetch_assoc();
+
+			if(!$resultado['valor_aposta'])
+				die(json_encode(array('error' => "Defina o valor máximo de aposta no cadastro da Rifa")));
+			
+			$resultado['soma'] = floatval($resultado['soma']);
+			$resultado['valor_aposta'] = floatval($resultado['valor_aposta']);
+
+			$max = ($resultado['valor_aposta']-$resultado['soma']);
+			$pos = $max - $valor;
+			$autorizar = $pos >= 0 ? true:false;
+			$pode_ganhar = intval($resultado['multiplicador']) * $valor;
+
+			if(!$autorizar) 
+				die(
+					json_encode(
+						array(
+							'error' => "O valor informado esta acima do valor disponivel para aposta do bilhete $bil.\r\n\r\nValor máximo: R$ " . number_format($max, 2, ',', '.')
+						)
+					)
+				);
+
+		}
+
+		die(
+			json_encode(
+				array(
+					'pode_ganhar' => 'R$ ' . number_format($pode_ganhar, 2, ',', '.'),
+					'aposta_maxima' => $max,
+					'autorizar' => true
+				)
+			)
+		);
+
+	}
+
+	$bilhete = intval($_POST['bilhete']);
+	$sql_code = "SELECT SUM(bil_aposta) as soma, rif.valor_aposta, rif.multiplicador FROM tbl_bilhetes bil, tbl_rifas rif WHERE bil.bil_rifa = '$codigo' AND bil.bil_numero = '$bilhete' AND rif.rifa_cod = bil.bil_rifa";
+	$sql_query = $mysqli->query($sql_code) or die($mysqli->error);
+	$resultado = $sql_query->fetch_assoc();
+
+	if(!$resultado['valor_aposta'])
+		die(json_encode(array('error' => "Defina o valor máximo de aposta no cadastro da Rifa")));
+	
+	$resultado['soma'] = floatval($resultado['soma']);
+	$resultado['valor_aposta'] = floatval($resultado['valor_aposta']);
+
+	$max = ($resultado['valor_aposta']-$resultado['soma']);
+	$pos = $max - $valor;
+	$autorizar = $pos >= 0 ? true:false;
+	$pode_ganhar = intval($resultado['multiplicador']) * $valor;
+
+	die(
+		json_encode(
+			array(
+				//'apostado' => $resultado['soma'],
+				'pode_ganhar' => 'R$ ' . number_format($pode_ganhar, 2, ',', '.'),
+				'aposta_maxima' => $max, /*
+				'pos' => $pos,*/
+				'autorizar' => $autorizar
+			)
+		)
+	);
+
+}
+
 if (isset($_SESSION['qr_order']))
 	$_SESSION['qr_order'] = false;
 
@@ -63,12 +198,12 @@ $maxbilhetes = DBSelect("select rifa_maxbilhetes as m, dezena_bolao, repetir_dez
 $dezenabolao = intval($maxbilhetes['dezena_bolao']);
 $repetirdezena = (intval($maxbilhetes['repetir_dezena']) == 1) ? true : false;
 
-if (strtotime($maxbilhetes['rifa_dtsorteio'] . " 23:59:59") < time())
+if (strtotime($maxbilhetes['rifa_dtsorteio'] . " 18:39:59") < time())
 	die("<script>alert('Rifa vencida'); location.href='index.php?p=rifas';</script>");
 
 $maxbilhetes = $maxbilhetes['m'];
 
-if (!$_SESSION) @session_start();
+unset($_SESSION['aposta']);
 if ($_GET['limpar_carrinho']) {
 	unset($_SESSION['carrinho_admin']);
 }
@@ -129,6 +264,7 @@ if ($queryBil->num_rows > 0)
 	} while ($bil = $queryBil->fetch_assoc());
 ?>
 <script>
+	var modoBancaOnline = <?= $rifa['banca_online'] ? 'true':'false'; ?>;
 	function padLeft(nr, n, str) {
 		return Array(n - String(nr).length + 1).join(str || '0') + nr;
 	}
@@ -291,10 +427,107 @@ if ($queryBil->num_rows > 0)
 
 	}
 
-	function checkar(id) {
+	function registrar_aposta(bilhete, cb) {
+		$.post('page/ver_bilhetes_centena.php', {
+			rifa: <?= $_GET['rifa']; ?>,
+			action: 'definir_aposta_maxima',
+			valor: $('#valor_banca_online').val(),
+			bilhete: bilhete
+		}).done(function(response) {
+			cb();
+		});
+	}
+
+	function calcular_aposta_maxima(bilhete, cb) {
+
+		$.post('page/ver_bilhetes_centena.php', {
+			rifa: <?= $_GET['rifa']; ?>,
+			action: 'calcular_aposta_maxima',
+			valor: $('#valor_banca_online').val(),
+			bilhete: bilhete
+		}).done(function(response) {
+			try {
+				let resp = JSON.parse(response);
+				if(resp.error)
+					return alert(resp.error);
+				if(!resp.autorizar)
+					return alert(`O valor informado esta acima do valor disponivel para aposta nesse Bilhete. \r\n\r\nA aposta máxima é: R$${resp.aposta_maxima}`);
+				cb(resp);
+			} catch(e) {
+				console.log(e);
+				alert( "Falha ao traduzir resposta do servidor");
+			}
+			
+		});
+	}
+
+	function checkar(id, pularBancaOnline) {
 		var campo_id = "bilhete" + id;
 		var holder = "holder" + id;
 		var bil = document.getElementById('bilhetes_selecionados');
+
+		if(modoBancaOnline && !pularBancaOnline) {
+			let modal = $('#modal_banca_online');
+
+			$('#botao_calcular', modal).off();
+			$('#botao_confirmar_aposta', modal).off();
+			$('#possivel_premiacao_holder', modal).hide();
+			$('#valor_banca_online', modal).val('');
+			$('#valor_banca_online', modal).removeAttr('disabled');
+
+			
+			$('#botao_confirmar_aposta', modal).off();
+			$('#botao_confirmar_aposta', modal).attr('disabled', 'diabled');
+
+			$('#bilhete_selecionado_bo', modal).html(id);
+
+			$('#modal_banca_online').modal('show');
+
+			let onclick = function() {
+				calcular_aposta_maxima(id, function (resp) {
+
+
+					$('#botao_calcular').removeClass('btn-primary').addClass('btn-secondary');
+					$('#botao_confirmar_aposta', modal).removeAttr('disabled');
+					$('#valor_banca_online', modal).attr('disabled', 'disabled');
+					$('#possivel_premiacao', modal).html(resp.pode_ganhar);
+					$('#botao_calcular', modal).text("Calcular Novamente");
+
+					$('#botao_calcular', modal).off();
+					$('#botao_calcular', modal).click(function() {
+
+						$('#botao_calcular').removeClass('btn-secondary').addClass('btn-primary');
+						$('#botao_calcular', modal).text("Calcular");
+						$('#valor_banca_online', modal).removeAttr('disabled');
+
+						$('#botao_confirmar_aposta', modal).off();
+						$('#botao_confirmar_aposta', modal).attr('disabled', 'diabled');
+
+						$('#possivel_premiacao').html('');
+
+						$('#botao_calcular', modal).off();
+						$('#botao_calcular', modal).click(onclick);
+
+					});
+
+					$('#possivel_premiacao_holder', modal).show();
+					$('#botao_confirmar_aposta', modal).off();
+					$('#botao_confirmar_aposta', modal).click(function() {
+						registrar_aposta(id, function() {
+							checkar(id, true);
+							enviar_formulario();
+							$('#modal_banca_online').modal('hide');
+						});
+					});
+					
+					//$('#modal_banca_online').modal('hide');
+					//checkar(id, true);
+
+				});
+			};
+			$('#botao_calcular', modal).click(onclick);
+			return;
+		}
 
 		if (document.getElementById(campo_id).checked) {
 
@@ -330,6 +563,7 @@ if ($queryBil->num_rows > 0)
 				document.getElementById(campo_id).checked = true;
 			<?php } ?>
 			bil.value += id + ';';
+				
 
 		}
 
@@ -404,9 +638,50 @@ if ($queryBil->num_rows > 0)
 	}
 </script>
 <style>
+
+	.tooltip-custom {
+	position: relative;
+	display: inline-block;
+	}
+
+	.tooltip-custom .tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	position: absolute;
+	z-index: 1;
+	bottom: 150%;
+	left: 50%;
+	margin-left: -60px;
+	}
+
+	.tooltip-custom .tooltiptext::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: black transparent transparent transparent;
+	}
+
+	.tooltip-custom:hover .tooltiptext {
+	visibility: visible;
+	}
+
+
 	.col-lg-12 {
 		padding-left: 0 !important;
 		padding-right: 0 !important;
+	}
+
+	.venda_parcial {
+		background-color:	#04A1E5!important;
 	}
 
 	.holder {
@@ -521,7 +796,71 @@ if ($queryBil->num_rows > 0)
 		}
 	}
 </style>
+
 <?php
+	
+$fotos = array();
+if($rifa['rifa_foto1'] /*&& file_exists('/var/www/nevoahost/c/rifasbrasil.com.br/' . $rifa['rifa_foto1'])*/)
+	$fotos[] = $rifa['rifa_foto1'];
+if($rifa['rifa_foto2'] /*&& file_exists('/var/www/nevoahost/c/rifasbrasil.com.br/' . $rifa['rifa_foto2'])*/)
+	$fotos[] = $rifa['rifa_foto2'];
+if($rifa['rifa_foto3'] /*&& file_exists('/var/www/nevoahost/c/rifasbrasil.com.br/' . $rifa['rifa_foto2'])*/)
+	$fotos[] = $rifa['rifa_foto3'];
+
+$inicio = true;
+
+if(count($fotos) > 0) {
+
+	?>
+	<div class="col-lg-12 " style="margin-bottom:30px;">
+		<div class="col-lg-3 center-block">
+			<div id="myCarousel" class="carousel slide" data-ride="carousel">
+			    <!-- Indicators -->
+			    <ol class="carousel-indicators">
+			    	<?php 
+			    	$k = 0;
+					foreach($fotos as $pic) {
+
+						$active = $inicio ? 'class="active"':'';
+						$inicio = false;
+					?>
+					<li data-target="#myCarousel" data-slide-to="<?= $k++; ?>" <?= $active; ?>></li>
+					<?php } ?>
+			    </ol>
+
+			    <!-- Wrapper for slides -->
+			    <div class="carousel-inner">
+					
+					<?php 
+					$inicio = true;
+					foreach($fotos as $pic) {
+
+						$active = $inicio ? 'active':'';
+						$inicio = false;
+					?>
+					<div class="item <?= $active; ?>">
+						<img src="/<?= $pic; ?>" style="width:100%;">
+						<div class="carousel-caption"></div>
+					</div>
+					<?php } ?>
+			  
+			    </div>
+
+			    <!-- Left and right controls -->
+			    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+			      <span class="glyphicon glyphicon-chevron-left"></span>
+			      <span class="sr-only">Previous</span>
+			    </a>
+			    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+			      <span class="glyphicon glyphicon-chevron-right"></span>
+			      <span class="sr-only">Next</span>
+			    </a>
+			</div>
+		</div>
+	</div>
+<?php
+}
+
 //verifica se o usuario é um usuario de link
 if ($_SESSION['usuario_sem_login']) {	?>
 	<div class="col-sm-12 text-center">
@@ -536,19 +875,28 @@ if ($_SESSION['usuario_sem_login']) {	?>
 		</div>
 	</div>
 <?php } else { ?>
+
 	<div class="col-sm-12 text-center">
-		<h5>
-			<b><?= $rifa['rifa_titulo']; ?></b> - <?= implode('/', array_reverse(explode('-', $rifa['rifa_dtsorteio']))); ?><br>
-		</h5>
+		<div style="background:	#FE7F1E;" class="rifa-descricoes">
+			<p style="text-align: center; vertical-align: middle; line-height: 2.5em; font-weight:bold; color:white"><?= $rifa['rifa_titulo']; ?> - <?= implode('/', array_reverse(explode('-', $rifa['rifa_dtsorteio']))); ?></p>
+		</div>
+		<div style="background:	#04A1E5;" class="rifa-descricoes">
+			<p style="text-align: center; vertical-align: middle; line-height: 2.5em; font-weight:bold; color:white"><?= $rifa['rifa_descricao']; ?></p>
+		</div>
+		<div style="background:	#23B247;" class="rifa-descricoes">
+			<p style="text-align: center; vertical-align: middle; line-height: 2.5em; font-weight:bold; color:white"><?= $rifa['rifa_proposito']; ?></p>
+		</div>
 	</div>
+
+	
 <?php } ?>
-<div class="color-legend" style="margin-top:50px;">
+<div class="color-legend" style="margin-top:50px; text-align:center;">
 	<div style="background:#b3e33e">&nbsp;</div>
 	Livre
-	<div style="background:#FE7F1E">&nbsp;</div>
-	Reservado
+	<div style="background:<?php if($rifa['banca_online']) echo "#04A1E5"; else echo "#FE7F1E"; ?>;">&nbsp;</div>
+	<?php if($rifa['banca_online']) echo "Metade/Parte Livre"; else echo "Reservado"; ?>
 	<div style="background:	#F41B24">&nbsp;</div>
-	Pago
+	<?php if($rifa['banca_online']) echo "Indisponível"; else echo "Pago"; ?>
 </div>
 <hr>
 <div id="desktop" class="col-lg-12"></div>
@@ -562,7 +910,36 @@ if ($_SESSION['usuario_sem_login']) {	?>
 </div>
 <div class="clearfix"></div>
 
+<!-- Modal -->
+<div id="modal_banca_online" class="modal fade" role="dialog">
+	<div class="modal-dialog">
 
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+		        <h5 class="modal-title text-center" style="color:blue;">BILHETE SELECIONADO: </h5>
+		        <h2 class="text-center" id="bilhete_selecionado_bo" style="margin:0; color:orange;">09</h2>
+		    </div>
+			<div class="modal-body text-center">
+				<p>Digite o VALOR que deseja apostar no quadro abaixo, o sistema irá informar o valor que você poderá ganhar!</p>
+				<p><b>Valor que quero APOSTAR:</b></p>
+				<div class="form-inline">
+					<label for="" style="margin-right:10px;">R$ </label><input id="valor_banca_online" type="text" size="3" class="form-control">
+					<button type="button" id="botao_calcular" class="btn btn-primary" >Calcular</button>
+				</div>
+				<div id="possivel_premiacao_holder">
+				<p><hr></p>
+				<p><b>POSSÍVEL PREMIAÇÃO: <span id="possivel_premiacao"></span></b><br><small>OBS: Para ganhar o valor informado acima seu bilhete tem que sair no 1º Prêmio da Loteria Federal!</small></p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<!-- <button type="button" onclick="nova_aposta();" class="btn btn-default" data-dismiss="modal">Nova Aposta</button> -->
+				<button type="button" id="botao_confirmar_aposta" class="btn btn-success" >Confirmar Aposta</button>
+			</div>
+		</div>
+
+	</div>
+</div>
 
 
 <!-- Modal -->

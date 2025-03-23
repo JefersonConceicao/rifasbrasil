@@ -5,7 +5,7 @@ error_reporting(0);
 
 // Conexão OFFLINE
 
-$hostname_conexao = "localhost";
+$hostname_conexao = "rifasbrasil.com.br";
 
 $database_conexao = "rifasbrasil";
 
@@ -22,12 +22,12 @@ $password_conexao = "gsp2013";
 
 // Conexão ONLINE
 
-$hostname_conexao = "localhost";
+$hostname_conexao = "rifasbrasil.com.br";
 $database_conexao = "rifasbrasil";
 $username_conexao = "rifasbrasil";
 $password_conexao = "1t8*Azfd1p!";
 
-$hostname_conexao = "localhost";
+$hostname_conexao = "rifasbrasil.com.br";
 $database_conexao = "rifasbrasil";
 $username_conexao = "rifasbrasil";
 $password_conexao = "marlene2016";
@@ -665,4 +665,3 @@ if(!function_exists("limparNumero")){
 
 
 ?>
-

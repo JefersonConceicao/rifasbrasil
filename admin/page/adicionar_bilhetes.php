@@ -16,13 +16,27 @@ AND (bil_situacao = 'V' or bil_situacao = '' or bil_situacao = 'P')";
 $queryBil = $mysqli->query($sqlBil) or die($mysqli->error);
 $bil      = $queryBil->fetch_assoc();
 
+$jaFoiVendido = false;
 if($bil['C'] > 0) // bilhete ja foi vendido, não tem mais o que fazer
-	die("[-2, null]");
+	$jaFoiVendido = true;
+
 
 // verifica se a rifa é travada
-$sqlBil     = "SELECT travar_bilhetes, rifa_maxbilhetes, rifa_dono, rifa_maxbilhetes from tbl_rifas where rifa_cod = '$rifa' limit 1";
+$sqlBil     = "SELECT travar_bilhetes, rifa_maxbilhetes, banca_online, multiplicador, valor_aposta, rifa_dono, rifa_maxbilhetes from tbl_rifas where rifa_cod = '$rifa' limit 1";
 $queryBil   = $mysqli->query($sqlBil) or die($mysqli->error);
 $bil        = $queryBil->fetch_assoc();
+
+if(!$bil['banca_online'] && $jaFoiVendido)
+	die("[-2, null]");
+else if($bil['banca_online']) {
+	// faz a outra verificacao do valor maximo e da autorizacao
+	$sql_query = "SELECT SUM(bil_aposta) as apostas, bil_numero FROM tbl_bilhetes WHERE bil_rifa = '$rifa' AND bil_numero = '$bilhete' GROUP BY bil_numero HAVING apostas >= '{$bil['valor_aposta']}'";
+	$query = $mysqli->query($sql_query) or die($mysqli->error);
+	$ja_vendeu = $query->num_rows;
+	//echo $sql_query ;
+	if($ja_vendeu)
+		die("[-2, null]");
+}
 
 $tam        = strlen($bil['rifa_maxbilhetes'])-1;
 
