@@ -1,11 +1,16 @@
 RewriteEngine On
 
-# Permitir acesso a arquivos estáticos
+# Permitir acesso a arquivos estáticos diretamente
 RewriteCond %{REQUEST_URI} \.(js|css|jpg|jpeg|png|gif|ico|woff|woff2|ttf|svg)$ [NC]
 RewriteRule ^ - [L]
 
+# Se o arquivo ou diretório existir, serve ele diretamente
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
 # Redirecionar as demais requisições para o index.php
-RewriteRule ^(.*)$ index.php [L]
+RewriteRule ^ index.php [L]
 
 php_value memory_limit 2048M
 php_value max_input_vars 40000

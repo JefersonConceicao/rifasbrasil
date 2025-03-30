@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 //var_dump("estou aqui"); exit;
+=======
+
+>>>>>>> 39f8f3b21f482f15544d699482393d57e0116184
 if (!isset($_SESSION))
   @session_start();
 
