@@ -1,5 +1,5 @@
 <?php
-var_dump("is here"); exit;
+//var_dump("is here"); exit;
 if(!isset($_SESSION)) @session_start();
 
 if(isset($_GET['p'])){
