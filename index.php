@@ -18,8 +18,6 @@ if(isset($_GET['p'])){
 
 ?>
 
-<!DOCTYPE html>
-
 <html lang="pt-br">
 
   <head>
