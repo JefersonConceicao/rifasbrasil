@@ -1,3 +1,13 @@
+
+RewriteEngine On
+
+# Permitir acesso a arquivos estáticos
+RewriteCond %{REQUEST_URI} !\.(js|css|jpg|jpeg|png|gif|ico|woff|woff2|ttf|svg)$
+
+# Redirecionar as demais requisições para o index.php
+RewriteRule ^(.*)$ index.php [L]
+
+
 php_value memory_limit 2048M
 php_value max_input_vars 40000
 php_flag display_startup_errors on
