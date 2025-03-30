@@ -1,5 +1,5 @@
 <?php 
-
+var_dump("is here"); exit;
 
 
 session_start(); 
