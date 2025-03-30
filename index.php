@@ -36,9 +36,9 @@ if(isset($_GET['p'])){
 
     <!-- Bootstrap -->
 
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="./css/bootstrap.css" rel="stylesheet">
 
-    <link href="css/estilo.css" rel="stylesheet">
+    <link href="./css/estilo.css" rel="stylesheet">
 
 
 
