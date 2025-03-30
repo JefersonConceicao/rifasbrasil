@@ -31,7 +31,7 @@ $contagem_impressao = $cont['t'];
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title><?= $_SERVER['SERVER_NAME']; ?></title>
   <!-- Bootstrap -->
-  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="./css/bootstrap.css" rel="stylesheet">
   <link href="../../css/estilo_admin.css" rel="stylesheet">
   <link rel="stylesheet" href="../../css/easy-autocomplete.themes.min.css">
   <link rel="stylesheet" href="../../css/easy-autocomplete.min.css">
