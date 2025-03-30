@@ -1,5 +1,5 @@
 <?php
-var_dump("estou aqui"); exit;
+
 if (!isset($_SESSION))
   @session_start();
 
