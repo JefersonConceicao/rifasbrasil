@@ -36,9 +36,9 @@ if(isset($_GET['p'])){
 
     <!-- Bootstrap -->
 
-    <link href="./css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">
 
-    <link href="./css/estilo.css" rel="stylesheet">
+    <link href="/css/estilo.css" rel="stylesheet">
 
 
 
@@ -228,7 +228,7 @@ if(isset($_GET['p'])){
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
 
-    <script src="js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
 
 
     
