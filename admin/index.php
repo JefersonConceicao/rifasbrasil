@@ -31,10 +31,10 @@ $contagem_impressao = $cont['t'];
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
   <title><?= $_SERVER['SERVER_NAME']; ?></title>
   <!-- Bootstrap -->
-  <link href="/css/bootstrap.css" rel="stylesheet">
-  <link href="/css/estilo_admin.css" rel="stylesheet">
-  <link rel="stylesheet" href="/css/easy-autocomplete.themes.min.css">
-  <link rel="stylesheet" href="/css/easy-autocomplete.min.css">
+  <link href="../../css/bootstrap.css" rel="stylesheet">
+  <link href="../../css/estilo_admin.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/easy-autocomplete.themes.min.css">
+  <link rel="stylesheet" href="../../css/easy-autocomplete.min.css">
   <link href='https://fonts.googleapis.com/css?family=Noto+Sans:400,400italic,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
