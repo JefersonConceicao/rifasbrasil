@@ -27,10 +27,10 @@ $database_conexao = "rifasbrasil";
 $username_conexao = "rifasbrasil";
 $password_conexao = "1t8*Azfd1p!";
 
-$hostname_conexao = "rifasbrasil.com.br";
+$hostname_conexao = "premiacoes.online";
 $database_conexao = "rifasbrasil";
-$username_conexao = "rifasbrasil";
-$password_conexao = "marlene2016";
+$username_conexao = "mallone";
+$password_conexao = "Jeferson@32488267";
 
 
 
